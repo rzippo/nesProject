@@ -1,5 +1,5 @@
 CONTIKI_PROJECT = central_unit
-CONTIKI = ../contiki/
+CONTIKI = ../contiki
 
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 
