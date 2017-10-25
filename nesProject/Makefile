@@ -1,7 +1,7 @@
 CONTIKI_PROJECT = central_unit
-CONTIKI = ..\contiki\core
+CONTIKI = ../contiki/core
 
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 
-include $(CONTIKI)\Makefile.include
+include $(CONTIKI)/Makefile.include
 all: $(CONTIKI_PROJECT)
