@@ -1,0 +1,1 @@
+/usr/bin/cc -g  -Wl,--enable-auto-import CMakeFiles/nesProject.dir/central_unit.c.o  -o nesProject.exe -Wl,--out-implib,libnesProject.dll.a -Wl,--major-image-version,0,--minor-image-version,0 

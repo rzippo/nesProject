@@ -1,0 +1,4 @@
+C:\Users\enric\.CLion2017.2\system\cygwin_cmake\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /cygdrive/d/Documenti/GitHub/nesProject/nesProject
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /cygdrive/d/Documenti/GitHub/nesProject/nesProject/cmake-build-debug
