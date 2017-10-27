@@ -106,5 +106,6 @@ dkms.conf
 symbols.c
 symbols.h
 
+nesProject/cmake-build-debug/
 
 
