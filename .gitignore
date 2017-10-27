@@ -107,5 +107,7 @@ symbols.c
 symbols.h
 
 nesProject/cmake-build-debug/
+*.sky
+*.z1
 
 
