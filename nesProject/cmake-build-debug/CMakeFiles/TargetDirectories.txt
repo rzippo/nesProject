@@ -1,4 +1,0 @@
-/cygdrive/d/Documenti/GitHub/nesProject/nesProject/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/cygdrive/d/Documenti/GitHub/nesProject/nesProject/cmake-build-debug/CMakeFiles/edit_cache.dir
-/cygdrive/d/Documenti/GitHub/nesProject/nesProject/cmake-build-debug/CMakeFiles/contiki_build.dir
-/cygdrive/d/Documenti/GitHub/nesProject/nesProject/cmake-build-debug/CMakeFiles/nesProject.dir
