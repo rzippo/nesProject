@@ -3,8 +3,8 @@ project(nesProject)
 
 set(CMAKE_C_STANDARD 99)
 
-set(SOURCE_FILES central_unit.c)
-add_executable(nesProject ${SOURCE_FILES})
+set(SOURCE_FILES central_unit.c node_door.c constants.h)
+add_executable(nesProject ${SOURCE_FILES} node_door.c constants.h)
 
 
 include_directories(D:/Documenti/GitHub/nesProject/contiki/core)
