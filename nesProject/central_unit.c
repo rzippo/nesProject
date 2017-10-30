@@ -1,14 +1,28 @@
+#include <net/linkaddr.h>
 #include "stdio.h"
-
 #include "contiki.h"
-
 #include "sys/etimer.h"
-
 #include "dev/leds.h"
-
 #include "dev/button-sensor.h"
-
 #include "constants.h"
+#include "net/rime/rime.h"
+
+#include "addresses.h"
+
+static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno){}
+
+static void sent_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions)
+{
+    printf("runicast message sent to %d.%d, retransmissions %d\n", to->u8[0], to->u8[1], retransmissions);
+}
+
+static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions)
+{
+    printf("runicast message timed out when sending to %d.%d, retransmissions %d\n", to->u8[0], to->u8[1], retransmissions);
+}
+
+static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_runicast, timedout_runicast};
+static struct runicast_conn runicast;
 
 static struct etimer commandTimeout;
 static unsigned char buttonCount = 0;
@@ -43,7 +57,6 @@ void command_switch(int command)
     }
 }
 
-
 PROCESS(central_unit_main, "Central Unit Main Process");
 
 AUTOSTART_PROCESSES(&central_unit_main);
@@ -53,6 +66,17 @@ PROCESS_THREAD(central_unit_main, ev, data)
     PROCESS_BEGIN();
 
                 SENSORS_ACTIVATE(button_sensor);
+
+                setNodesAddresses();
+
+                printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
+                runicast_open(&runicast, 144, &runicast_calls);
+
+                //int prova = 1;
+                //packetbuf_copyfrom(&prova,4);
+                //runicast_send(&runicast, &doorNodeAddress, MAX_RETRANSMISSIONS);
+
+                //printf("Send to %d.%d\n", doorNodeAddress.u8[0], doorNodeAddress.u8[1]);
 
                 while(1) {
 
