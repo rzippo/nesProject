@@ -18,7 +18,7 @@ static struct etimer temperatureTimer;
 static unsigned char alarm = 0;
 static unsigned char ledStatus = 0;
 
-static float temperatures[5];
+static float temperatures[MAX_TEMPERATURE_READINGS];
 static int lastTemperatureIndex = 0;
 
 static process_event_t alarm_toggled_event;
@@ -125,8 +125,16 @@ PROCESS_THREAD(door_node_main, ev, data)
                         }
                         if (etimer_expired(&temperatureTimer))
                         {
+                            // Sht11 header file tells us that this is the conversion formula
+                            // Temperature in Celsius (t in 14 bits resolution at 3 Volts)
+                            // T = -39.60 + 0.01*t
                             int measuredTemperature = sht11_sensor.value(SHT11_SENSOR_TEMP);
-                            printf("Temp measured %d\n",measuredTemperature);
+                            double convertedTemperature = -39.60 + 0.01*measuredTemperature;
+                            //printf("Temp measured %d\n", (int)convertedTemperature);
+
+                            temperatures[lastTemperatureIndex] = convertedTemperature;
+                            lastTemperatureIndex = (lastTemperatureIndex + 1) % MAX_TEMPERATURE_READINGS;
+
                             etimer_reset(&temperatureTimer);
                         }
                     } else if (ev == alarm_toggled_event)
