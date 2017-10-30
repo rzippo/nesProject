@@ -27,22 +27,51 @@ static struct runicast_conn runicast;
 static struct etimer commandTimeout;
 static unsigned char buttonCount = 0;
 
-void command_switch(int command)
+void sendDoorNode(unsigned char c)
+{
+	packetbuf_copyfrom(&c,4);
+	runicast_send(&runicast, &doorNodeAddress, MAX_RETRANSMISSIONS);
+}
+
+void sendGateNode(unsigned char c)
+{
+	packetbuf_copyfrom(&c,4);
+	runicast_send(&runicast, &gateNodeAddress, MAX_RETRANSMISSIONS);
+}
+
+void command_switch(unsigned char command)
 {
     switch(command)
     {
-        case ALARM_TOGGLE_COMMAND: //Alarm toggle
-            //TODO:alarm toggle
-            printf("Alarm Toggled\n");
-            break;
-        case GATELOCK_TOGGLE_COMMAND: //Gate lock toggle
-            //TODO:gate lock toggle
-            printf("Gate Lock Toggled\n");
-            break;
-        case DOORS_OPEN_COMMAND: //Open doors
-            //TODO:open doors
-            printf("Doors opened\n");
-            break;
+        case ALARM_TOGGLE_COMMAND:
+		{
+			printf("Alarm Toggled\n");
+			
+			sendDoorNode(ALARM_TOGGLE_COMMAND);
+			sendGateNode(ALARM_TOGGLE_COMMAND);
+		
+			break;
+		}
+		
+        case GATELOCK_TOGGLE_COMMAND:
+		{
+			printf("Gate Lock Toggled\n");
+			
+			sendGateNode(GATELOCK_TOGGLE_COMMAND);
+			
+			break;
+		}
+        
+        case DOORS_OPEN_COMMAND:
+		{
+			printf("Doors opened\n");
+			
+			sendDoorNode(DOORS_OPEN_COMMAND);
+			sendGateNode(DOORS_OPEN_COMMAND);
+			
+			break;
+		}
+		
         case AVERAGE_TEMPERATURE_COMMAND: //Average temp
             //TODO:average temp
             printf("Average temp\n");
@@ -78,8 +107,8 @@ PROCESS_THREAD(central_unit_main, ev, data)
 
                 //printf("Send to %d.%d\n", doorNodeAddress.u8[0], doorNodeAddress.u8[1]);
 
-                while(1) {
-
+                while(1)
+				{
                     PROCESS_WAIT_EVENT();
 
                     if(ev == sensors_event && data == &button_sensor){
@@ -88,16 +117,18 @@ PROCESS_THREAD(central_unit_main, ev, data)
 
                         if(buttonCount == 1)//first press, set the timer
                         {
-                            etimer_set(&commandTimeout, COMMAND_TIMEOUT*CLOCK_SECOND);
+                            etimer_set( &commandTimeout, COMMAND_TIMEOUT * CLOCK_SECOND );
                         }
                         else
                         {
                             etimer_restart(&commandTimeout);
                         }
-                    }else if(ev == PROCESS_EVENT_TIMER)
+                    }
+					else if(ev == PROCESS_EVENT_TIMER)
                     {
-                        if(buttonCount != 0 && etimer_expired(&commandTimeout)){
-                            printf("Timer expired\n");
+                        if(buttonCount != 0 && etimer_expired(&commandTimeout))
+						{
+                            printf("Timer expired: count is %d\n", buttonCount);
                             etimer_stop(&commandTimeout);
                             command_switch(buttonCount);
                             buttonCount = 0;
