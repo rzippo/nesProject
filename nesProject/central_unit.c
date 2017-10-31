@@ -76,6 +76,7 @@ void command_switch(unsigned char command)
             //TODO:average temp
             printf("Average temp\n");
             break;
+			
         case LIGHT_VALUE_COMMAND: //Light value
             //TODO: light value
             printf("Light Value\n");
@@ -93,11 +94,10 @@ AUTOSTART_PROCESSES(&central_unit_main);
 PROCESS_THREAD(central_unit_main, ev, data)
 {
     PROCESS_BEGIN();
-
                 SENSORS_ACTIVATE(button_sensor);
 
                 setNodesAddresses();
-
+				
                 printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
                 runicast_open(&runicast, 144, &runicast_calls);
 
