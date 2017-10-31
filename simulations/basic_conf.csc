@@ -22,8 +22,8 @@
     </events>
     <motetype>
       org.contikios.cooja.mspmote.SkyMoteType
-      <identifier>sky1</identifier>
-      <description>Central Node</description>
+      <identifier>CentralUnit</identifier>
+      <description>Central Unit</description>
       <source EXPORT="discard">[CONFIG_DIR]/../nesProject/central_unit.c</source>
       <commands EXPORT="discard">make central_unit.sky TARGET=sky</commands>
       <firmware EXPORT="copy">[CONFIG_DIR]/../nesProject/central_unit.sky</firmware>
@@ -45,7 +45,7 @@
     </motetype>
     <motetype>
       org.contikios.cooja.mspmote.SkyMoteType
-      <identifier>sky2</identifier>
+      <identifier>DoorNode</identifier>
       <description>Door Node</description>
       <source EXPORT="discard">[CONFIG_DIR]/../nesProject/door_node.c</source>
       <commands EXPORT="discard">make door_node.sky TARGET=sky</commands>
@@ -80,9 +80,9 @@
       </interface_config>
       <interface_config>
         org.contikios.cooja.mspmote.interfaces.MspMoteID
-        <id>1</id>
+        <id>3</id>
       </interface_config>
-      <motetype_identifier>sky1</motetype_identifier>
+      <motetype_identifier>CentralUnit</motetype_identifier>
     </mote>
     <mote>
       <breakpoints />
@@ -98,9 +98,9 @@
       </interface_config>
       <interface_config>
         org.contikios.cooja.mspmote.interfaces.MspMoteID
-        <id>2</id>
+        <id>1</id>
       </interface_config>
-      <motetype_identifier>sky2</motetype_identifier>
+      <motetype_identifier>DoorNode</motetype_identifier>
     </mote>
   </simulation>
   <plugin>
