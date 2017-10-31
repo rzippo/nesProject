@@ -29,13 +29,13 @@ static unsigned char buttonCount = 0;
 
 void sendDoorNode(unsigned char c)
 {
-	packetbuf_copyfrom(&c,4);
+	packetbuf_copyfrom(&c,1);
 	runicast_send(&runicast, &doorNodeAddress, MAX_RETRANSMISSIONS);
 }
 
 void sendGateNode(unsigned char c)
 {
-	packetbuf_copyfrom(&c,4);
+	packetbuf_copyfrom(&c,1);
 	runicast_send(&runicast, &gateNodeAddress, MAX_RETRANSMISSIONS);
 }
 
