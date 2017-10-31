@@ -1,7 +1,3 @@
-//
-// Created by enric on 29/10/2017.
-//
-
 #ifndef NESPROJECT_ADDRESSES_H
 
 #include "net/linkaddr.h"
@@ -17,6 +13,8 @@
 #define GATE_NODE_HIGH 2
 #define GATE_NODe_LOW 0
 
+#define CU_DOOR_CHANNEL 144
+#define CU_GATE_CHANNEL 154
 
 linkaddr_t centralNodeAddress;
 linkaddr_t doorNodeAddress;

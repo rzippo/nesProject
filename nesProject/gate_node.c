@@ -1,4 +1,3 @@
-
 #include "stdio.h"
 #include "contiki.h"
 #include "sys/etimer.h"
@@ -18,14 +17,14 @@ static int lastTemperatureIndex = 0;
 
 void processCommand(unsigned char command);
 
-PROCESS(door_node_main, "Door Node Main Process");
+PROCESS(gate_node_main, "Gate Node Main Process");
 
-AUTOSTART_PROCESSES(&door_node_main, &alarm_process);
+AUTOSTART_PROCESSES(&gate_node_main, &alarm_process);
 
 static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno)
 {
-    unsigned char receivedCommand = *( (unsigned char*)packetbuf_dataptr() );
-    
+	unsigned char receivedCommand = *( (unsigned char*)packetbuf_dataptr() );
+	
 	printf("runicast message received from %d.%d, seqno %d, message: %c\n",
 		   from->u8[0],
 		   from->u8[1],
@@ -107,52 +106,50 @@ void processCommand(unsigned char command)
 	}
 }
 
-PROCESS_THREAD(door_node_main, ev, data)
+PROCESS_THREAD(gate_node_main, ev, data)
 {
-    PROCESS_BEGIN();
-			    setNodesAddresses();
+	PROCESS_BEGIN();
+				setNodesAddresses();
 				
-                printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
-
-                runicast_open(&cuRunicastConnection, CU_DOOR_CHANNEL, &runicast_calls);
-			
+				printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
+				
+				runicast_open(&cuRunicastConnection, CU_GATE_CHANNEL, &runicast_calls);
+				
 				SENSORS_ACTIVATE(sht11_sensor);
-			
+				
 				etimer_set(&temperatureTimer, TEMPERATURE_MEASURE_PERIOD * CLOCK_SECOND);
-			
-			
+				
+				
 				while(1)
 				{
-                    //printf("I wait for event\n");
-
-                    PROCESS_WAIT_EVENT();
-
-                    //printf("Event arrived\n");
-
-                    if (ev == sensors_event && data == &button_sensor)
+					//printf("I wait for event\n");
+					
+					PROCESS_WAIT_EVENT();
+					
+					//printf("Event arrived\n");
+					
+					if (ev == sensors_event && data == &button_sensor)
 					{
-
-                    }
+					
+					}
 					else if (ev == PROCESS_EVENT_TIMER)
 					{
-                        if (etimer_expired(&temperatureTimer))
-                        {
-                            // Sht11 header file tells us that this is the conversion formula
-                            // Temperature in Celsius (t in 14 bits resolution at 3 Volts)
-                            // T = -39.60 + 0.01*t
-                            int measuredTemperature = sht11_sensor.value(SHT11_SENSOR_TEMP);
-                            double convertedTemperature = -39.60 + 0.01*measuredTemperature;
-                            //printf("Temp measured %d\n", (int)convertedTemperature);
-
-                            temperatures[lastTemperatureIndex] = convertedTemperature;
-                            lastTemperatureIndex = (lastTemperatureIndex + 1) % MAX_TEMPERATURE_READINGS;
-
-                            etimer_reset(&temperatureTimer);
-                    	}
-                    }
-                }
-
-    PROCESS_END();
+						if (etimer_expired(&temperatureTimer))
+						{
+							// Sht11 header file tells us that this is the conversion formula
+							// Temperature in Celsius (t in 14 bits resolution at 3 Volts)
+							// T = -39.60 + 0.01*t
+							int measuredTemperature = sht11_sensor.value(SHT11_SENSOR_TEMP);
+							double convertedTemperature = -39.60 + 0.01*measuredTemperature;
+							//printf("Temp measured %d\n", (int)convertedTemperature);
+							
+							temperatures[lastTemperatureIndex] = convertedTemperature;
+							lastTemperatureIndex = (lastTemperatureIndex + 1) % MAX_TEMPERATURE_READINGS;
+							
+							etimer_reset(&temperatureTimer);
+						}
+					}
+				}
+	
+	PROCESS_END();
 }
-
-

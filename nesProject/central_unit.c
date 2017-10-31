@@ -22,7 +22,8 @@ static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uin
 }
 
 static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_runicast, timedout_runicast};
-static struct runicast_conn runicast;
+static struct runicast_conn doorRunicastConnection;
+static struct runicast_conn gateRunicastConnection;
 
 static struct etimer commandTimeout;
 static unsigned char buttonCount = 0;
@@ -30,13 +31,13 @@ static unsigned char buttonCount = 0;
 void sendDoorNode(unsigned char c)
 {
 	packetbuf_copyfrom(&c,1);
-	runicast_send(&runicast, &doorNodeAddress, MAX_RETRANSMISSIONS);
+	runicast_send(&doorRunicastConnection, &doorNodeAddress, MAX_RETRANSMISSIONS);
 }
 
 void sendGateNode(unsigned char c)
 {
 	packetbuf_copyfrom(&c,1);
-	runicast_send(&runicast, &gateNodeAddress, MAX_RETRANSMISSIONS);
+	runicast_send(&gateRunicastConnection, &gateNodeAddress, MAX_RETRANSMISSIONS);
 }
 
 void command_switch(unsigned char command)
@@ -99,8 +100,10 @@ PROCESS_THREAD(central_unit_main, ev, data)
                 setNodesAddresses();
 				
                 printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
-                runicast_open(&runicast, 144, &runicast_calls);
-
+                
+				runicast_open(&doorRunicastConnection, CU_DOOR_CHANNEL, &runicast_calls);
+				runicast_open(&gateRunicastConnection, CU_GATE_CHANNEL, &runicast_calls);
+				
                 //int prova = 1;
                 //packetbuf_copyfrom(&prova,4);
                 //runicast_send(&runicast, &doorNodeAddress, MAX_RETRANSMISSIONS);

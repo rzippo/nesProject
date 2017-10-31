@@ -11,7 +11,7 @@ set(SOURCE_FILES
         addresses.c
         alarm_process.h
         alarm_process.c
-    )
+        gate_node.c)
 add_executable(nesProject ${SOURCE_FILES} door_node.c constants.h addresses.h addresses.c)
 
 
