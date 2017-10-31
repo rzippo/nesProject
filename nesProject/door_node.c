@@ -52,56 +52,50 @@ static struct runicast_conn cuRunicastConnection;
 
 void processCommand(unsigned char command)
 {
-	switch(command)
+	if( command == ALARM_TOGGLE_COMMAND )
 	{
-		case ALARM_TOGGLE_COMMAND:
+		int postResult = process_post(&alarm_process, alarm_toggled_event, NULL);
+		if( postResult == PROCESS_ERR_FULL)
+			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
+	}
+	else
+	{
+		if(isAlarmOn)
 		{
-			int postResult = process_post(&alarm_process, alarm_toggled_event, NULL);
-			if( postResult == PROCESS_ERR_FULL)
-				process_post_synch(&alarm_process, alarm_toggled_event, NULL);
-			
-			break;
+			printf("Alarm is ON: command %c refused\n", command);
 		}
-		
-		default:
+		else
 		{
-			if(isAlarmOn)
+			switch(command)
 			{
-				printf("Alarm is ON: command %c refused\n", command);
-			}
-			else
-			{
-				switch(command)
+				case GATELOCK_TOGGLE_COMMAND:
 				{
-					case GATELOCK_TOGGLE_COMMAND:
-					{
-						printf("Gate Lock Toggled\n");
-						break;
-					}
-					
-					case DOORS_OPEN_COMMAND:
-					{
-						printf("Doors opened\n");
-						break;
-					}
-					
-					
-					case AVERAGE_TEMPERATURE_COMMAND:
-					{	//TODO:average temp
-						printf("Average temp\n");
-						break;
-					}
-					
-					case LIGHT_VALUE_COMMAND:
-					{
-						printf("Light Value\n");
-						break;
-					}
-					
-					default:
-						printf("There is no command with id %d\n", command);
-						break;
+					printf("Gate Lock Toggled\n");
+					break;
 				}
+				
+				case DOORS_OPEN_COMMAND:
+				{
+					printf("Doors opened\n");
+					break;
+				}
+				
+				
+				case AVERAGE_TEMPERATURE_COMMAND:
+				{	//TODO:average temp
+					printf("Average temp\n");
+					break;
+				}
+				
+				case LIGHT_VALUE_COMMAND:
+				{
+					printf("Light Value\n");
+					break;
+				}
+				
+				default:
+					printf("There is no command with id %d\n", command);
+					break;
 			}
 		}
 	}
