@@ -9,47 +9,19 @@
 #include "dev/sht11/sht11-sensor.h"
 
 #include "alarm_process.h"
+#include "gateRimeStack.h"
 
 static struct etimer temperatureTimer;
 
 static float temperatures[MAX_TEMPERATURE_READINGS];
 static int lastTemperatureIndex = 0;
 
-void processCommand(unsigned char command);
 
 PROCESS(gate_node_main, "Gate Node Main Process");
 
 AUTOSTART_PROCESSES(&gate_node_main, &alarm_process);
 
-static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno)
-{
-	unsigned char receivedCommand = *( (unsigned char*)packetbuf_dataptr() );
-	
-	printf("runicast message received from %d.%d, seqno %d, message: %c\n",
-		   from->u8[0],
-		   from->u8[1],
-		   seqno,
-		   receivedCommand);
-	
-	if( from->u8[0] == CENTRAL_UNIT_HIGH &&
-		from->u8[1] == CENTRAL_UNIT_LOW)
-	{
-		processCommand(receivedCommand);
-	}
-	else
-	{
-		printf("Message from unexpected node: refused\n");
-	}
-}
-
-static void sent_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions){}
-
-static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions){}
-
-static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_runicast, timedout_runicast};
-static struct runicast_conn cuRunicastConnection;
-
-void processCommand(unsigned char command)
+void processCUCommand(unsigned char command)
 {
 	if( command == ALARM_TOGGLE_COMMAND )
 	{
@@ -103,16 +75,11 @@ void processCommand(unsigned char command)
 PROCESS_THREAD(gate_node_main, ev, data)
 {
 	PROCESS_BEGIN();
-				setNodesAddresses();
-				
-				printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
-				
-				runicast_open(&cuRunicastConnection, CU_GATE_CHANNEL, &runicast_calls);
+				initGateRimeStack();
 				
 				SENSORS_ACTIVATE(sht11_sensor);
 				
 				etimer_set(&temperatureTimer, TEMPERATURE_MEASURE_PERIOD * CLOCK_SECOND);
-				
 				
 				while(1)
 				{
