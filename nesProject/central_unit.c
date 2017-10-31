@@ -5,40 +5,13 @@
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
 #include "constants.h"
-#include "net/rime/rime.h"
 
-#include "addresses.h"
+#include "cuRimeStack.h"
 
-static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno){}
+PROCESS(central_unit_main, "Central Unit Main Process");
 
-static void sent_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions)
-{
-    printf("runicast message sent to %d.%d, retransmissions %d\n", to->u8[0], to->u8[1], retransmissions);
-}
+AUTOSTART_PROCESSES(&central_unit_main);
 
-static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions)
-{
-    printf("runicast message timed out when sending to %d.%d, retransmissions %d\n", to->u8[0], to->u8[1], retransmissions);
-}
-
-static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_runicast, timedout_runicast};
-static struct runicast_conn doorRunicastConnection;
-static struct runicast_conn gateRunicastConnection;
-
-static struct etimer commandTimeout;
-static unsigned char buttonCount = 0;
-
-void sendDoorNode(unsigned char c)
-{
-	packetbuf_copyfrom(&c,1);
-	runicast_send(&doorRunicastConnection, &doorNodeAddress, MAX_RETRANSMISSIONS);
-}
-
-void sendGateNode(unsigned char c)
-{
-	packetbuf_copyfrom(&c,1);
-	runicast_send(&gateRunicastConnection, &gateNodeAddress, MAX_RETRANSMISSIONS);
-}
 
 void command_switch(unsigned char command)
 {
@@ -88,28 +61,16 @@ void command_switch(unsigned char command)
     }
 }
 
-PROCESS(central_unit_main, "Central Unit Main Process");
-
-AUTOSTART_PROCESSES(&central_unit_main);
-
 PROCESS_THREAD(central_unit_main, ev, data)
 {
-    PROCESS_BEGIN();
+	static struct etimer commandTimeout;
+	static unsigned char buttonCount = 0;
+	
+	PROCESS_BEGIN();
                 SENSORS_ACTIVATE(button_sensor);
 
-                setNodesAddresses();
+				initCURimeStack();
 				
-                printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
-                
-				runicast_open(&doorRunicastConnection, CU_DOOR_CHANNEL, &runicast_calls);
-				runicast_open(&gateRunicastConnection, CU_GATE_CHANNEL, &runicast_calls);
-				
-                //int prova = 1;
-                //packetbuf_copyfrom(&prova,4);
-                //runicast_send(&runicast, &doorNodeAddress, MAX_RETRANSMISSIONS);
-
-                //printf("Send to %d.%d\n", doorNodeAddress.u8[0], doorNodeAddress.u8[1]);
-
                 while(1)
 				{
                     PROCESS_WAIT_EVENT();
