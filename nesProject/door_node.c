@@ -31,8 +31,16 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 		   from->u8[1],
 		   seqno,
 		   receivedCommand);
-
-    command_switch(receivedCommand);
+	
+	if( from->u8[0] == CENTRAL_UNIT_HIGH &&
+		from->u8[1] == CENTRAL_UNIT_LOW)
+	{
+		command_switch(receivedCommand);
+	}
+	else
+	{
+		printf("Message from unexpected node: refused\n");
+	}
 }
 
 static void sent_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions){}
