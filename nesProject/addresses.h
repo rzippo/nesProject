@@ -16,9 +16,9 @@
 #define CU_DOOR_CHANNEL 144
 #define CU_GATE_CHANNEL 154
 
-linkaddr_t centralNodeAddress;
-linkaddr_t doorNodeAddress;
-linkaddr_t gateNodeAddress;
+extern linkaddr_t centralNodeAddress;
+extern linkaddr_t doorNodeAddress;
+extern linkaddr_t gateNodeAddress;
 
 void setNodesAddresses();
 

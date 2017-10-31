@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include "addresses.h"
 
+linkaddr_t centralNodeAddress;
+linkaddr_t doorNodeAddress;
+linkaddr_t gateNodeAddress;
+
 void setNodesAddresses()
 {
     centralNodeAddress.u8[0] = CENTRAL_UNIT_HIGH;
