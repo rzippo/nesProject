@@ -9,19 +9,16 @@
 #include "addresses.h"
 #include "dev/sht11/sht11-sensor.h"
 
+#include "alarm_process.h"
 
 static struct etimer temperatureTimer;
 
 static float temperatures[MAX_TEMPERATURE_READINGS];
 static int lastTemperatureIndex = 0;
 
-static process_event_t alarm_toggled_event;
-
 void command_switch(int);
 
 PROCESS(door_node_main, "Door Node Main Process");
-
-PROCESS(alarm_process, "Alarm blinking process");
 
 AUTOSTART_PROCESSES(&door_node_main, &alarm_process);
 
@@ -39,7 +36,6 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 }
 
 static void sent_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions){}
-
 
 static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions){}
 
@@ -95,15 +91,16 @@ PROCESS_THREAD(door_node_main, ev, data)
 				etimer_set(&temperatureTimer, TEMPERATURE_MEASURE_PERIOD * CLOCK_SECOND);
 			
 			
-				while(1) {
-
+				while(1)
+				{
                     //printf("I wait for event\n");
 
                     PROCESS_WAIT_EVENT();
 
                     //printf("Event arrived\n");
 
-                    if (ev == sensors_event && data == &button_sensor) {
+                    if (ev == sensors_event && data == &button_sensor)
+					{
 
                     }
 					else if (ev == PROCESS_EVENT_TIMER)
@@ -128,48 +125,4 @@ PROCESS_THREAD(door_node_main, ev, data)
     PROCESS_END();
 }
 
-PROCESS_THREAD(alarm_process, ev, data)
-{
-	static struct etimer alarmBlinkingTimer;
-	static unsigned char isAlarmOn = 0;
-	static unsigned char alarmPreviousLEDStatus = 0;
-	
-	PROCESS_BEGIN();
-	
-		while(1)
-		{
-			PROCESS_WAIT_EVENT();
-			
-			if(ev == alarm_toggled_event)
-			{
-				if(isAlarmOn == 0)
-				{
-					printf("Alarm Toggled: ON\n");
-					
-					isAlarmOn = 1;
-					alarmPreviousLEDStatus = leds_get();
-					leds_on(LEDS_ALL);
-					
-					etimer_set( &alarmBlinkingTimer, ALARM_LED_PERIOD * CLOCK_SECOND );
-				}
-				else
-				{
-					printf("Alarm Toggled: OFF\n");
-					
-					isAlarmOn = 0;
-					leds_set(alarmPreviousLEDStatus);
-					etimer_stop(&alarmBlinkingTimer);
-				}
-			}
-			else if ( 	isAlarmOn &&
-						ev == PROCESS_EVENT_TIMER &&
-						etimer_expired(&alarmBlinkingTimer) )
-			{
-				printf("Alarm blinking\n");
-				leds_toggle(LEDS_ALL);
-				etimer_reset(&alarmBlinkingTimer);
-			}
-		}
-		
-	PROCESS_END();
-}
+

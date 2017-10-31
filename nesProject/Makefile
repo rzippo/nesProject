@@ -1,4 +1,4 @@
-PROJECT_SOURCEFILES=addresses.c
+PROJECT_SOURCEFILES += addresses.c alarm_process.c
 CONTIKI = ../contiki
 CONTIKI_WITH_RIME = 1
 
