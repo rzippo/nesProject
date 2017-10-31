@@ -16,7 +16,7 @@ static struct etimer temperatureTimer;
 static float temperatures[MAX_TEMPERATURE_READINGS];
 static int lastTemperatureIndex = 0;
 
-void command_switch(int);
+void processCommand(unsigned char command);
 
 PROCESS(door_node_main, "Door Node Main Process");
 
@@ -26,7 +26,7 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 {
     unsigned char receivedCommand = *( (unsigned char*)packetbuf_dataptr() );
     
-	printf("runicast message received from %d.%d, seqno %d, message: %d\n",
+	printf("runicast message received from %d.%d, seqno %d, message: %c\n",
 		   from->u8[0],
 		   from->u8[1],
 		   seqno,
@@ -35,7 +35,7 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 	if( from->u8[0] == CENTRAL_UNIT_HIGH &&
 		from->u8[1] == CENTRAL_UNIT_LOW)
 	{
-		command_switch(receivedCommand);
+		processCommand(receivedCommand);
 	}
 	else
 	{
@@ -50,39 +50,61 @@ static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uin
 static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_runicast, timedout_runicast};
 static struct runicast_conn runicast;
 
-void command_switch(int command)
+void processCommand(unsigned char command)
 {
-    switch(command)
-    {
-        case ALARM_TOGGLE_COMMAND:
+	switch(command)
+	{
+		case ALARM_TOGGLE_COMMAND:
 		{
-            int postResult = process_post(&alarm_process, alarm_toggled_event, NULL);
+			int postResult = process_post(&alarm_process, alarm_toggled_event, NULL);
 			if( postResult == PROCESS_ERR_FULL)
 				process_post_synch(&alarm_process, alarm_toggled_event, NULL);
 			
-            break;
+			break;
 		}
 		
-		case GATELOCK_TOGGLE_COMMAND: //Gate lock toggle
-            //TODO:gate lock toggle
-            printf("Gate Lock Toggled\n");
-            break;
-        case DOORS_OPEN_COMMAND: //Open doors
-            //TODO:open doors
-            printf("Doors opened\n");
-            break;
-        case AVERAGE_TEMPERATURE_COMMAND: //Average temp
-            //TODO:average temp
-            printf("Average temp\n");
-            break;
-        case LIGHT_VALUE_COMMAND: //Light value
-            //TODO: light value
-            printf("Light Value\n");
-            break;
-        default: //error, no command
-            printf("There is no command with id %d\n", command);
-            break;
-    }
+		default:
+		{
+			if(isAlarmOn)
+			{
+				printf("Alarm is ON: command %c refused\n", command);
+			}
+			else
+			{
+				switch(command)
+				{
+					case GATELOCK_TOGGLE_COMMAND:
+					{
+						printf("Gate Lock Toggled\n");
+						break;
+					}
+					
+					case DOORS_OPEN_COMMAND:
+					{
+						printf("Doors opened\n");
+						break;
+					}
+					
+					
+					case AVERAGE_TEMPERATURE_COMMAND:
+					{	//TODO:average temp
+						printf("Average temp\n");
+						break;
+					}
+					
+					case LIGHT_VALUE_COMMAND:
+					{
+						printf("Light Value\n");
+						break;
+					}
+					
+					default:
+						printf("There is no command with id %d\n", command);
+						break;
+				}
+			}
+		}
+	}
 }
 
 PROCESS_THREAD(door_node_main, ev, data)
