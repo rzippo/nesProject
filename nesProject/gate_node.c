@@ -11,15 +11,25 @@
 #include "alarm_process.h"
 #include "gateRimeStack.h"
 
-static struct etimer temperatureTimer;
+static char isGateLocked = 1;
 
-static float temperatures[MAX_TEMPERATURE_READINGS];
-static int lastTemperatureIndex = 0;
+PROCESS(gate_init, "Gate Node init Process");
 
+AUTOSTART_PROCESSES(&gate_init, &alarm_process);
 
-PROCESS(gate_node_main, "Gate Node Main Process");
-
-AUTOSTART_PROCESSES(&gate_node_main, &alarm_process);
+void updateGateLockLEDs()
+{
+	if(isGateLocked)
+	{
+		leds_off(LEDS_GREEN);
+		leds_on(LEDS_RED);
+	}
+	else
+	{
+		leds_on(LEDS_GREEN);
+		leds_off(LEDS_RED);
+	}
+}
 
 void processCUCommand(unsigned char command)
 {
@@ -42,6 +52,10 @@ void processCUCommand(unsigned char command)
 				case GATELOCK_TOGGLE_COMMAND:
 				{
 					printf("Gate Lock Toggled\n");
+					
+					isGateLocked = !isGateLocked;
+					updateGateLockLEDs();
+					
 					break;
 				}
 				
@@ -65,52 +79,17 @@ void processCUCommand(unsigned char command)
 				}
 				
 				default:
-					printf("There is no command with id %d\n", command);
+					printf("Command %d not recognized from this node\n", command);
 					break;
 			}
 		}
 	}
 }
 
-PROCESS_THREAD(gate_node_main, ev, data)
+PROCESS_THREAD(gate_init, ev, data)
 {
 	PROCESS_BEGIN();
-				initGateRimeStack();
-				
-				SENSORS_ACTIVATE(sht11_sensor);
-				
-				etimer_set(&temperatureTimer, TEMPERATURE_MEASURE_PERIOD * CLOCK_SECOND);
-				
-				while(1)
-				{
-					//printf("I wait for event\n");
-					
-					PROCESS_WAIT_EVENT();
-					
-					//printf("Event arrived\n");
-					
-					if (ev == sensors_event && data == &button_sensor)
-					{
-					
-					}
-					else if (ev == PROCESS_EVENT_TIMER)
-					{
-						if (etimer_expired(&temperatureTimer))
-						{
-							// Sht11 header file tells us that this is the conversion formula
-							// Temperature in Celsius (t in 14 bits resolution at 3 Volts)
-							// T = -39.60 + 0.01*t
-							int measuredTemperature = sht11_sensor.value(SHT11_SENSOR_TEMP);
-							double convertedTemperature = -39.60 + 0.01*measuredTemperature;
-							//printf("Temp measured %d\n", (int)convertedTemperature);
-							
-							temperatures[lastTemperatureIndex] = convertedTemperature;
-							lastTemperatureIndex = (lastTemperatureIndex + 1) % MAX_TEMPERATURE_READINGS;
-							
-							etimer_reset(&temperatureTimer);
-						}
-					}
-				}
-	
+		initGateRimeStack();
+		updateGateLockLEDs();
 	PROCESS_END();
 }

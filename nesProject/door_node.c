@@ -39,18 +39,11 @@ void processCUCommand(unsigned char command)
 		{
 			switch(command)
 			{
-				case GATELOCK_TOGGLE_COMMAND:
-				{
-					printf("Gate Lock Toggled\n");
-					break;
-				}
-				
 				case DOORS_OPEN_COMMAND:
 				{
 					printf("Doors opened\n");
 					break;
 				}
-				
 				
 				case AVERAGE_TEMPERATURE_COMMAND:
 				{	//TODO:average temp
@@ -65,7 +58,7 @@ void processCUCommand(unsigned char command)
 				}
 				
 				default:
-					printf("There is no command with id %d\n", command);
+					printf("Command %d not recognized from this node\n", command);
 					break;
 			}
 		}
