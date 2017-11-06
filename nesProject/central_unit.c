@@ -46,11 +46,15 @@ void command_switch(unsigned char command)
 			break;
 		}
 		
-        case AVERAGE_TEMPERATURE_COMMAND: //Average temp
-            //TODO:average temp
-            printf("Average temp\n");
-            break;
+        case AVERAGE_TEMPERATURE_COMMAND:
+		{
+			printf("Average temp\n");
+	
+			sendDoorNode(AVERAGE_TEMPERATURE_COMMAND);
 			
+			break;
+		}
+		
         case LIGHT_VALUE_COMMAND: //Light value
             //TODO: light value
             printf("Light Value\n");
@@ -99,6 +103,7 @@ PROCESS_THREAD(central_unit_main, ev, data)
                         }
                     }
                 }
+		
 
     PROCESS_END();
 }

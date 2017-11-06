@@ -18,8 +18,9 @@ set(SOURCE_FILES
         cuRimeStack.h
         doorRimeStack.c
         doorRimeStack.h
-
-        )
+        averageTemperatureProcess.c
+        averageTemperatureProcess.h
+    )
 add_executable(nesProject ${SOURCE_FILES} door_node.c constants.h addresses.h addresses.c)
 
 
