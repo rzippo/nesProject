@@ -33,7 +33,8 @@ PROCESS_THREAD(averageTemperatureProcess, ev, data)
 	static int didIndexWrapAround = 0;
 	
 	PROCESS_BEGIN();
-
+		
+		SENSORS_ACTIVATE(sht11_sensor);
 		etimer_set(&temperatureTimer, TEMPERATURE_MEASURING_PERIOD * CLOCK_SECOND);
 		
 		while(1)

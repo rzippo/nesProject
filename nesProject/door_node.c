@@ -48,12 +48,6 @@ void processCUCommand(unsigned char command)
 					break;
 				}
 				
-				case LIGHT_VALUE_COMMAND:
-				{
-					printf("Light Value\n");
-					break;
-				}
-				
 				default:
 					printf("Command %d not recognized from this node\n", command);
 					break;
@@ -66,24 +60,5 @@ PROCESS_THREAD(door_node_main, ev, data)
 {
     PROCESS_BEGIN();
 				initDoorRimeStack();
-				
-				SENSORS_ACTIVATE(sht11_sensor);
-			
-				//etimer_set(&temperatureTimer, TEMPERATURE_MEASURE_PERIOD * CLOCK_SECOND);
-				
-				//while(1)
-				//{
-                //    //printf("I wait for event\n");
-				//
-                //    PROCESS_WAIT_EVENT();
-				//
-                //    //printf("Event arrived\n");
-				//
-                //    if (ev == sensors_event && data == &button_sensor)
-					//{
-				//
-                //    }
-                //}
-
     PROCESS_END();
 }

@@ -52,14 +52,23 @@ void command_switch(unsigned char command)
 	
 			sendDoorNode(AVERAGE_TEMPERATURE_COMMAND);
 			
+			//TODO: obtain response from the node
+			
 			break;
 		}
 		
-        case LIGHT_VALUE_COMMAND: //Light value
-            //TODO: light value
-            printf("Light Value\n");
-            break;
-        default: //error, no command
+        case LIGHT_VALUE_COMMAND:
+		{
+			printf("Light Value\n");
+			
+			sendGateNode(LIGHT_VALUE_COMMAND);
+			
+			//TODO: obtain response from the node
+			
+			break;
+		}
+		
+		default:
             printf("There is no command with id %d\n", command);
             break;
     }

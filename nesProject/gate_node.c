@@ -65,15 +65,9 @@ void processCUCommand(unsigned char command)
 					break;
 				}
 				
-				
-				case AVERAGE_TEMPERATURE_COMMAND:
-				{	//TODO:average temp
-					printf("Average temp\n");
-					break;
-				}
-				
 				case LIGHT_VALUE_COMMAND:
 				{
+					//TODO: implement measurement and send result back to CU
 					printf("Light Value\n");
 					break;
 				}
