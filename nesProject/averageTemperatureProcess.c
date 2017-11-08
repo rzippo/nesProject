@@ -34,17 +34,20 @@ PROCESS_THREAD(averageTemperatureProcess, ev, data)
 	
 	PROCESS_BEGIN();
 		
-		SENSORS_ACTIVATE(sht11_sensor);
 		etimer_set(&temperatureTimer, TEMPERATURE_MEASURING_PERIOD * CLOCK_SECOND);
 		
 		while(1)
 		{
 			PROCESS_WAIT_UNTIL(ev == PROCESS_EVENT_TIMER && etimer_expired(&temperatureTimer));
 			
+			SENSORS_ACTIVATE(sht11_sensor);
+				int rawTemperatureReading = sht11_sensor.value(SHT11_SENSOR_TEMP);
+			SENSORS_DEACTIVATE(sht11_sensor);
+			
 			// Sht11 header file tells us that this is the conversion formula
 			// Temperature in Celsius (t in 14 bits resolution at 3 Volts)
 			// T = -39.60 + 0.01*t
-			int rawTemperatureReading = sht11_sensor.value(SHT11_SENSOR_TEMP);
+			
 			double measuredTemperature = -39.60 + 0.01*rawTemperatureReading;
 			//printf("Temp measured %d\n", (int)measuredTemperature);
 			
