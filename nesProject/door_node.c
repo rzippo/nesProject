@@ -11,6 +11,7 @@
 
 #include "doorRimeStack.h"
 #include "alarm_process.h"
+#include "doorAutoOpening.h"
 #include "averageTemperatureProcess.h"
 
 PROCESS(door_node_main, "Door Node Main Process");
@@ -21,9 +22,16 @@ void processCUCommand(unsigned char command)
 {
 	if( command == ALARM_TOGGLE_COMMAND )
 	{
-		int postResult = process_post(&alarm_process, alarm_toggled_event, NULL);
-		if( postResult == PROCESS_ERR_FULL)
+		if(!isAlarmOn)
+		{
+			process_post_synch(&doorAutoOpeningProcess, alarm_toggled_event, NULL);
 			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
+		}
+		else
+		{
+			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
+			process_post_synch(&doorAutoOpeningProcess, alarm_toggled_event, NULL);
+		}
 	}
 	else
 	{
@@ -37,7 +45,7 @@ void processCUCommand(unsigned char command)
 			{
 				case DOORS_OPEN_COMMAND:
 				{
-					printf("Doors opened\n");
+					process_start(&doorAutoOpeningProcess, NULL);
 					break;
 				}
 				
