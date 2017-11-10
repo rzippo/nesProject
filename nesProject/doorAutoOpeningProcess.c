@@ -10,6 +10,7 @@
 #include "dev/leds.h"
 
 #include "constants.h"
+#include "lock.h"
 #include "alarm_process.h"
 
 PROCESS(doorAutoOpeningProcess, "Door auto opening process");
@@ -44,6 +45,9 @@ PROCESS_THREAD(doorAutoOpeningProcess, ev, data)
 			}
 		}
 		
+		printf("Door auto opening: door opened\n");
+		setLock(UNLOCKED);
+		
 		printf("Door auto opening: blinking started\n");
 		
 		blinkings = 0;
@@ -71,5 +75,7 @@ PROCESS_THREAD(doorAutoOpeningProcess, ev, data)
 		}
 		
 		printf("Door auto opening: blinking stopped\n");
+		printf("Gate auto opening: door locked\n");
+		setLock(LOCKED);
 	PROCESS_END();
 }

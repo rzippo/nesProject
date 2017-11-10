@@ -11,6 +11,7 @@
 
 #include "doorRimeStack.h"
 #include "alarm_process.h"
+#include "lock.h"
 #include "doorAutoOpeningProcess.h"
 #include "averageTemperatureProcess.h"
 
@@ -82,6 +83,7 @@ void processCUCommand(unsigned char command)
 PROCESS_THREAD(door_node_main, ev, data)
 {
     PROCESS_BEGIN();
-				initDoorRimeStack();
+			initDoorRimeStack();
+			setLock(LOCKED);
     PROCESS_END();
 }

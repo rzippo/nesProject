@@ -8,3 +8,4 @@ Comandi:
 
 Aggiunte:
 - Gestione dell'apertura con led anche per la porta
+        - Implementato per il comando 3 di apertura automatica
