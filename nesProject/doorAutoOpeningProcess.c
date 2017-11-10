@@ -2,7 +2,7 @@
 // Created by Raff on 09/11/2017.
 //
 
-#include "doorAutoOpening.h"
+#include "doorAutoOpeningProcess.h"
 
 #include "contiki.h"
 #include "stdio.h"

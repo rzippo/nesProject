@@ -1,0 +1,12 @@
+//
+// Created by Raff on 10/11/2017.
+//
+
+#ifndef NESPROJECT_GATEAUTOOPENINGPROCESS_C_H
+#define NESPROJECT_GATEAUTOOPENINGPROCESS_C_H
+
+#include "contiki.h"
+
+PROCESS_NAME(gateAutoOpeningProcess);
+
+#endif //NESPROJECT_GATEAUTOOPENINGPROCESS_C_H

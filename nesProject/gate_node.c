@@ -7,27 +7,13 @@
 #include "platform/sky/dev/light-sensor.h"
 
 #include "alarm_process.h"
+#include "gateLock.h"
+#include "gateAutoOpeningProcess.h"
 #include "gateRimeStack.h"
 
-static char isGateLocked = 1;
 
-PROCESS(gate_init, "Gate Node init Process");
-AUTOSTART_PROCESSES(&gate_init, &alarm_process);
-
-void updateGateLockLEDs()
-{
-	if(isGateLocked)
-	{
-		leds_off(LEDS_GREEN);
-		leds_on(LEDS_RED);
-	}
-	else
-	{
-		leds_on(LEDS_GREEN);
-		leds_off(LEDS_RED);
-	}
-}
-
+PROCESS(gate_node_init, "Gate Node init Process");
+AUTOSTART_PROCESSES(&gate_node_init, &alarm_process);
 
 double getExternalLight()
 {
@@ -52,9 +38,16 @@ void processCUCommand(unsigned char command)
 {
 	if( command == ALARM_TOGGLE_COMMAND )
 	{
-		int postResult = process_post(&alarm_process, alarm_toggled_event, NULL);
-		if( postResult == PROCESS_ERR_FULL)
+		if(!isAlarmOn)
+		{
+			process_post_synch(&gateAutoOpeningProcess, alarm_toggled_event, NULL);
 			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
+		}
+		else
+		{
+			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
+			process_post_synch(&gateAutoOpeningProcess, alarm_toggled_event, NULL);
+		}
 	}
 	else
 	{
@@ -69,16 +62,14 @@ void processCUCommand(unsigned char command)
 				case GATELOCK_TOGGLE_COMMAND:
 				{
 					printf("Gate Lock Toggled\n");
-					
-					isGateLocked = !isGateLocked;
-					updateGateLockLEDs();
+					toogleGateLock();
 					
 					break;
 				}
 				
 				case DOORS_OPEN_COMMAND:
 				{
-					printf("Doors opened\n");
+					process_start(&gateAutoOpeningProcess, NULL);
 					break;
 				}
 				
@@ -100,10 +91,10 @@ void processCUCommand(unsigned char command)
 	}
 }
 
-PROCESS_THREAD(gate_init, ev, data)
+PROCESS_THREAD(gate_node_init, ev, data)
 {
 	PROCESS_BEGIN();
 		initGateRimeStack();
-		updateGateLockLEDs();
+		setGateLock(GATE_LOCKED);
 	PROCESS_END();
 }

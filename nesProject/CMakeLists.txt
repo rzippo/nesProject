@@ -20,7 +20,13 @@ set(SOURCE_FILES
         doorRimeStack.h
         averageTemperatureProcess.c
         averageTemperatureProcess.h
-        doorAutoOpening.c doorAutoOpening.h)
+        doorAutoOpeningProcess.c
+        doorAutoOpeningProcess.h
+        gateAutoOpeningProcess.c
+        gateAutoOpeningProcess.h
+        gateLock.c
+        gateLock.h
+        )
 add_executable(nesProject ${SOURCE_FILES} door_node.c constants.h addresses.h addresses.c)
 
 

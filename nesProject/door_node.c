@@ -11,7 +11,7 @@
 
 #include "doorRimeStack.h"
 #include "alarm_process.h"
-#include "doorAutoOpening.h"
+#include "doorAutoOpeningProcess.h"
 #include "averageTemperatureProcess.h"
 
 PROCESS(door_node_main, "Door Node Main Process");
