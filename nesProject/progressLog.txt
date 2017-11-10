@@ -7,5 +7,11 @@ Comandi:
 5: Implementato, inclusa la trasmissione dei dati
 
 Aggiunte:
-- Gestione dell'apertura con led anche per la porta
+1: Gestione dell'apertura con led anche per la porta
         - Implementato per il comando 3 di apertura automatica
+
+2: Se si può supporre il bottone del door node come posto sulla porta: gestione temporizzata della porta.
+    Per esempio si apre la porta premendo il bottone dall'interno, il nodo la richiude automaticamente dopo tot secondi (non servono chiavi).
+    Dall'esterno servirebbe comunque una chiave ma non si può "approssimare" comunque col bottone: dopo aver aperto con la chiave, si occupa il nodo di richiudere senza dover riusare le chiavi dall'interno.
+
+3: Potendo distinguere l'entrata e l'uscita di casa, si possono gestire cose come riscaldamento e scaldabagno.
