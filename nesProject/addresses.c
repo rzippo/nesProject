@@ -17,5 +17,5 @@ void setNodesAddresses()
     doorNodeAddress.u8[1] = DOOR_NODE_LOW;
 
     gateNodeAddress.u8[0] = GATE_NODE_HIGH;
-    gateNodeAddress.u8[1] = GATE_NODe_LOW;
+    gateNodeAddress.u8[1] = GATE_NODE_LOW;
 }

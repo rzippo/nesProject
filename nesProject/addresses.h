@@ -11,7 +11,7 @@
 #define DOOR_NODE_LOW 0
 
 #define GATE_NODE_HIGH 2
-#define GATE_NODe_LOW 0
+#define GATE_NODE_LOW 0
 
 #define CU_DOOR_CHANNEL 144
 #define CU_GATE_CHANNEL 154

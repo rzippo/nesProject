@@ -21,7 +21,7 @@ double getExternalLight()
 	
 	//TODO: capire quale dei due usare
 	
-	#if 1 //PHOTOSYNTHETIC
+	#if 0 //PHOTOSYNTHETIC
 		int rawReading = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
 		double externalLight = 10 * rawReading / 7;
 	#else //TOTAL_SOLAR
@@ -79,6 +79,22 @@ void processCUCommand(unsigned char command)
 					
 					double externalLight = getExternalLight();
 					printf("External light value: %d\n", (int) externalLight);
+
+					//cmd: 1byte, float size 4 bytes, float 4 bytes
+					unsigned char buff[9];
+
+					//1byte for cmd, 4 bytes for float
+					int* payloadSize = (int*)buff;
+					*payloadSize = 5;
+
+					*(buff+4) = LIGHT_VALUE_COMMAND;
+
+					float* floatBuff = (float*)(buff+5);
+					*floatBuff = (float)externalLight;
+
+					//printf("%c\n",*(buff+4));
+
+                    sendFromGateToCentralUnit(buff, 9);
 					
 					break;
 				}

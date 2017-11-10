@@ -6,7 +6,7 @@
 #define NESPROJECT_CURIMESTACK_H
 
 void initCURimeStack();
-void sendDoorNode(unsigned char c);
-void sendGateNode(unsigned char c);
+void sendDoorNode(unsigned char* c, int bytes);
+void sendGateNode(unsigned char* c, int bytes);
 
 #endif //NESPROJECT_CURIMESTACK_H

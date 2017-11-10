@@ -5,6 +5,7 @@
 #include "doorAutoOpeningProcess.h"
 
 #include "contiki.h"
+#include "sys/clock.h"
 #include "stdio.h"
 #include "dev/leds.h"
 
@@ -18,21 +19,25 @@ PROCESS_THREAD(doorAutoOpeningProcess, ev, data)
 	static struct etimer initialDelay;
 	static struct etimer blinkingTimer;
 	static int blinkings;
+	static clock_time_t remainingDelay;
 	
 	PROCESS_BEGIN();
 		
 		printf("Door auto opening: started\n");
-		
+
+		remainingDelay = DOOR_AUTO_OPENING_DELAY * CLOCK_SECOND;
+
 		while(1)
 		{
 			printf("Door auto opening: waiting initial delay\n");
-			etimer_set(&initialDelay, DOOR_AUTO_OPENING_DELAY * CLOCK_SECOND);
+			etimer_set(&initialDelay, remainingDelay);
 			PROCESS_WAIT_EVENT();
 			if(ev == PROCESS_EVENT_TIMER && etimer_expired(&initialDelay))
 				break;
 			else if( ev == alarm_toggled_event)
 			{
 				printf("Door auto opening: delay interrupted by alarm\n");
+				remainingDelay = etimer_expiration_time(&initialDelay) - clock_time();
 				etimer_stop(&initialDelay);
 				PROCESS_WAIT_EVENT_UNTIL(ev == alarm_toggled_event);
 				printf("Door auto opening: alarm stopped, resuming delay\n");
