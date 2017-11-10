@@ -1,0 +1,10 @@
+Comandi:
+
+1: Implementato per entrambi i nodi. Forzata la preemption sul comando 3
+2: Implementato, utilizzato dal comando 3.
+3: Implementato come da specifiche
+4: Implementato, inclusa la trasmissione dei dati
+5: Implementato, inclusa la trasmissione dei dati
+
+Aggiunte:
+- Gestione dell'apertura con led anche per la porta
