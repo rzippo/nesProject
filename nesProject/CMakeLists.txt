@@ -24,8 +24,8 @@ set(SOURCE_FILES
         doorAutoOpeningProcess.h
         gateAutoOpeningProcess.c
         gateAutoOpeningProcess.h
-        gateLock.c
-        gateLock.h
+        lock.c
+        lock.h
         )
 add_executable(nesProject ${SOURCE_FILES} door_node.c constants.h addresses.h addresses.c)
 

@@ -7,7 +7,7 @@
 #include "platform/sky/dev/light-sensor.h"
 
 #include "alarm_process.h"
-#include "gateLock.h"
+#include "lock.h"
 #include "gateAutoOpeningProcess.h"
 #include "gateRimeStack.h"
 
@@ -21,7 +21,7 @@ double getExternalLight()
 	
 	//TODO: capire quale dei due usare
 	
-	#if 0 //PHOTOSYNTHETIC
+	#if 1 //PHOTOSYNTHETIC
 		int rawReading = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
 		double externalLight = 10 * rawReading / 7;
 	#else //TOTAL_SOLAR
@@ -62,7 +62,7 @@ void processCUCommand(unsigned char command)
 				case GATELOCK_TOGGLE_COMMAND:
 				{
 					printf("Gate Lock Toggled\n");
-					toogleGateLock();
+					toogleLock();
 					
 					break;
 				}
@@ -79,22 +79,6 @@ void processCUCommand(unsigned char command)
 					
 					double externalLight = getExternalLight();
 					printf("External light value: %d\n", (int) externalLight);
-
-					//cmd: 1byte, float size 4 bytes, float 4 bytes
-					unsigned char buff[9];
-
-					//1byte for cmd, 4 bytes for float
-					int* payloadSize = (int*)buff;
-					*payloadSize = 5;
-
-					*(buff+4) = LIGHT_VALUE_COMMAND;
-
-					float* floatBuff = (float*)(buff+5);
-					*floatBuff = (float)externalLight;
-
-					//printf("%c\n",*(buff+4));
-
-                    sendFromGateToCentralUnit(buff, 9);
 					
 					break;
 				}
@@ -111,6 +95,6 @@ PROCESS_THREAD(gate_node_init, ev, data)
 {
 	PROCESS_BEGIN();
 		initGateRimeStack();
-		setGateLock(GATE_LOCKED);
+				setLock(LOCKED);
 	PROCESS_END();
 }

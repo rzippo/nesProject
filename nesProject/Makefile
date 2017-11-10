@@ -1,7 +1,7 @@
 PROJECT_SOURCEFILES += \
     addresses.c alarm_process.c cuRimeStack.c gateRimeStack.c doorRimeStack.c \
     averageTemperatureProcess.c doorAutoOpeningProcess.c gateAutoOpeningProcess.c \
-    gateLock.c
+    lock.c
 
 CONTIKI = ../contiki
 CONTIKI_WITH_RIME = 1

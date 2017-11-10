@@ -9,7 +9,7 @@
 #include "dev/leds.h"
 
 #include "constants.h"
-#include "gateLock.h"
+#include "lock.h"
 #include "alarm_process.h"
 
 PROCESS(gateAutoOpeningProcess, "Gate auto opening process");
@@ -21,7 +21,7 @@ PROCESS_THREAD(gateAutoOpeningProcess, ev, data)
 	
 	PROCESS_BEGIN();
 		printf("Gate auto opening: gate opened\n");
-		setGateLock(GATE_UNLOCKED);
+				setLock(UNLOCKED);
 		
 		printf("Gate auto opening: blinking started\n");
 		
@@ -51,6 +51,6 @@ PROCESS_THREAD(gateAutoOpeningProcess, ev, data)
 		
 		printf("Gate auto opening: blinking stopped\n");
 		printf("Gate auto opening: gate locked\n");
-		setGateLock(GATE_LOCKED);
+				setLock(LOCKED);
 	PROCESS_END();
 }
