@@ -8,8 +8,36 @@
 #include "stdio.h"
 #include "net/rime/rime.h"
 
+extern void processDoorMessage(unsigned char* message, int payloadSize);
+extern void processGateMessage(unsigned char* message, int payloadSize);
 
-static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno){}
+static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno)
+{
+    unsigned char* buffer = packetbuf_dataptr();
+
+	int payloadSize = *( (int*)buffer);
+
+    printf("runicast message received from %d.%d, seqno %d, message: %c\n",
+           from->u8[0],
+           from->u8[1],
+           seqno,
+           *(buffer+4));
+
+	if( from->u8[0] == DOOR_NODE_HIGH &&
+		from->u8[1] == DOOR_NODE_LOW)
+	{
+		processDoorMessage(buffer+4, payloadSize);
+	}
+	else if( from->u8[0] == GATE_NODE_HIGH &&
+			 from->u8[1] == GATE_NODE_LOW)
+	{
+		processGateMessage(buffer+4, payloadSize);
+	}
+	else
+	{
+		printf("Message from unexpected node: refused\n");
+	}
+}
 
 static void sent_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions)
 {
@@ -25,15 +53,15 @@ static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_run
 static struct runicast_conn doorRunicastConnection;
 static struct runicast_conn gateRunicastConnection;
 
-void sendDoorNode(unsigned char c)
+void sendDoorNode(unsigned char* c, int bytes)
 {
-	packetbuf_copyfrom(&c,1);
+	packetbuf_copyfrom(c, bytes);
 	runicast_send(&doorRunicastConnection, &doorNodeAddress, MAX_RETRANSMISSIONS);
 }
 
-void sendGateNode(unsigned char c)
+void sendGateNode(unsigned char* c, int bytes)
 {
-	packetbuf_copyfrom(&c,1);
+	packetbuf_copyfrom(c, bytes);
 	runicast_send(&gateRunicastConnection, &gateNodeAddress, MAX_RETRANSMISSIONS);
 }
 

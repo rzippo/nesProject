@@ -2,7 +2,7 @@
 // Created by Raff on 31/10/2017.
 //
 
-#include "gateRimeStack.h"
+#include "doorRimeStack.h"
 #include "addresses.h"
 #include "constants.h"
 
@@ -46,4 +46,10 @@ void initDoorRimeStack()
 	printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
 	
 	runicast_open(&cuRunicastConnection, CU_DOOR_CHANNEL, &runicast_calls);
+}
+
+void sendFromDoorToCentralUnit(unsigned char *cmd, int bytes)
+{
+	packetbuf_copyfrom(cmd, bytes);
+	runicast_send(&cuRunicastConnection, &centralNodeAddress, MAX_RETRANSMISSIONS);
 }

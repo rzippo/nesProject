@@ -47,3 +47,9 @@ void initGateRimeStack()
 	
 	runicast_open(&cuRunicastConnection, CU_GATE_CHANNEL, &runicast_calls);
 }
+
+void sendFromGateToCentralUnit(unsigned char *cmd, int bytes)
+{
+    packetbuf_copyfrom(cmd, bytes);
+    runicast_send(&cuRunicastConnection, &centralNodeAddress, MAX_RETRANSMISSIONS);
+}
