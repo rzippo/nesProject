@@ -15,7 +15,7 @@ PROCESS(alarm_process, "Alarm blinking process");
 PROCESS_THREAD(alarm_process, ev, data)
 {
 	static struct etimer alarmBlinkingTimer;
-	static unsigned char alarmPreviousLEDStatus = 0;
+	static unsigned char ledStatusBeforeAlarm = 0;
 	
 	PROCESS_BEGIN();
 	
@@ -30,17 +30,18 @@ PROCESS_THREAD(alarm_process, ev, data)
 					printf("Alarm Toggled: ON\n");
 					
 					isAlarmOn = 1;
-					alarmPreviousLEDStatus = leds_get();
+					ledStatusBeforeAlarm = leds_get();
 					leds_on(LEDS_ALL);
 					
-					etimer_set( &alarmBlinkingTimer, ALARM_LED_PERIOD * CLOCK_SECOND );
+					//divide by 2 because 1sec on + 1sec off = 2secs period 
+					etimer_set( &alarmBlinkingTimer, ALARM_LED_PERIOD * CLOCK_SECOND / 2 );
 				}
 				else
 				{
 					printf("Alarm Toggled: OFF\n");
 					
 					isAlarmOn = 0;
-					leds_set(alarmPreviousLEDStatus);
+					leds_set(ledStatusBeforeAlarm);
 					etimer_stop(&alarmBlinkingTimer);
 				}
 			}
