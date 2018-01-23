@@ -110,5 +110,3 @@ nesProject/cmake-build-debug/
 *.sky
 *.z1
 
-#vs code 
-.vscode/
