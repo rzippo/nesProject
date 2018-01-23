@@ -21,8 +21,7 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 		   seqno,
 		   receivedCommand);
 	
-	if( from->u8[0] == CENTRAL_UNIT_HIGH &&
-		from->u8[1] == CENTRAL_UNIT_LOW)
+	if(linkaddr_cmp(from, centralUnitAddress))
 	{
 		processCUCommand(receivedCommand);
 	}
@@ -51,5 +50,5 @@ void initGateRimeStack()
 void sendFromGateToCentralUnit(unsigned char *cmd, int bytes)
 {
     packetbuf_copyfrom(cmd, bytes);
-    runicast_send(&cuRunicastConnection, &centralNodeAddress, MAX_RETRANSMISSIONS);
+    runicast_send(&cuRunicastConnectiolUnit, MAX_RETRANSMISSIONS);
 }
