@@ -2,14 +2,14 @@
 #include "contiki.h"
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
-#include "constants.h"
 #include "net/rime/rime.h"
 #include "platform/sky/dev/light-sensor.h"
 
-#include "alarm_process.h"
-#include "lock.h"
-#include "gateAutoOpeningProcess.h"
-#include "gateRimeStack.h"
+#include "commons/constants.h"
+#include "commons/alarm_process.h"
+#include "commons/lock.h"
+#include "gate/gateAutoOpeningProcess.h"
+#include "gate/gateRimeStack.h"
 
 
 PROCESS(gate_node_init, "Gate Node init Process");

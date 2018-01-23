@@ -3,7 +3,7 @@
 //
 #include "cuRimeStack.h"
 #include "commons/addresses.h"
-#include "constants.h"
+#include "commons/constants.h"
 
 #include "stdio.h"
 #include "net/rime/rime.h"

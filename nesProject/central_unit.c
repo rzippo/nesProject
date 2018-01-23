@@ -4,9 +4,9 @@
 #include "sys/etimer.h"
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
-#include "constants.h"
 
-#include "cuRimeStack.h"
+#include "commons/constants.h"
+#include "central_unit/cuRimeStack.h"
 
 PROCESS(central_unit_main, "Central Unit Main Process");
 

@@ -3,8 +3,8 @@
 //
 
 #include "gateRimeStack.h"
-#include "addresses.h"
-#include "constants.h"
+#include "commons/addresses.h"
+#include "commons/constants.h"
 
 #include "stdio.h"
 #include "net/rime/rime.h"
@@ -21,7 +21,7 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 		   seqno,
 		   receivedCommand);
 	
-	if(linkaddr_cmp(from, centralUnitAddress))
+	if(linkaddr_cmp(from, &centralNodeAddress))
 	{
 		processCUCommand(receivedCommand);
 	}
@@ -50,5 +50,5 @@ void initGateRimeStack()
 void sendFromGateToCentralUnit(unsigned char *cmd, int bytes)
 {
     packetbuf_copyfrom(cmd, bytes);
-    runicast_send(&cuRunicastConnectiolUnit, MAX_RETRANSMISSIONS);
+    runicast_send(&cuRunicastConnection, &centralNodeAddress, MAX_RETRANSMISSIONS);
 }

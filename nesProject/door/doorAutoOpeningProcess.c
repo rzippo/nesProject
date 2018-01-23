@@ -9,9 +9,9 @@
 #include "stdio.h"
 #include "dev/leds.h"
 
-#include "constants.h"
-#include "lock.h"
-#include "alarm_process.h"
+#include "commons/constants.h"
+#include "commons/lock.h"
+#include "commons/alarm_process.h"
 
 PROCESS(doorAutoOpeningProcess, "Door auto opening process");
 

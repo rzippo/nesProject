@@ -1,8 +1,0 @@
-//
-// Created by enric on 09/11/2017.
-//
-
-#ifndef NESPROJECT_MAINRIMESTACK_H_H
-#define NESPROJECT_MAINRIMESTACK_H_H
-
-#endif //NESPROJECT_MAINRIMESTACK_H_H

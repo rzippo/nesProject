@@ -2,9 +2,9 @@
 // Created by Raff on 31/10/2017.
 //
 
-#include "doorRimeStack.h"
-#include "addresses.h"
-#include "constants.h"
+#include "door/doorRimeStack.h"
+#include "commons/addresses.h"
+#include "commons/constants.h"
 
 #include "stdio.h"
 #include "net/rime/rime.h"
@@ -21,7 +21,7 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 		   seqno,
 		   receivedCommand);
 	
-	if( linkaddr_cmp(from, centralNodeAddress))
+	if( linkaddr_cmp(from, &centralNodeAddress))
 	{
 		processCUCommand(receivedCommand);
 	}

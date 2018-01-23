@@ -4,16 +4,16 @@
 #include "sys/etimer.h"
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
-#include "constants.h"
+#include "commons/constants.h"
 #include "net/rime/rime.h"
-#include "addresses.h"
+#include "commons/addresses.h"
 #include "dev/sht11/sht11-sensor.h"
 
-#include "doorRimeStack.h"
-#include "alarm_process.h"
-#include "lock.h"
-#include "doorAutoOpeningProcess.h"
-#include "averageTemperatureProcess.h"
+#include "door/doorRimeStack.h"
+#include "commons/alarm_process.h"
+#include "commons/lock.h"
+#include "door/doorAutoOpeningProcess.h"
+#include "door/averageTemperatureProcess.h"
 
 PROCESS(door_node_main, "Door Node Main Process");
 
