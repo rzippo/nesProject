@@ -23,11 +23,11 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
            seqno,
            *(buffer+4));
 
-	if(linkaddr_cmp(from, doorNodeAddress))
+	if(linkaddr_cmp(from, &doorNodeAddress))
 	{
 		processDoorMessage(buffer+4, payloadSize);
 	}
-	else if(linkaddr_cmp(from, gateNodeAddress))
+	else if(linkaddr_cmp(from, &gateNodeAddress))
 	{
 		processGateMessage(buffer+4, payloadSize);
 	}

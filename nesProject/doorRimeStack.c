@@ -21,7 +21,7 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 		   seqno,
 		   receivedCommand);
 	
-	if( linkaddr_cmp(from, centralNodeAddress))
+	if( linkaddr_cmp(from, &centralNodeAddress))
 	{
 		processCUCommand(receivedCommand);
 	}
