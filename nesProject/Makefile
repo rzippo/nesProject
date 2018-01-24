@@ -8,4 +8,13 @@ CONTIKI_WITH_RIME = 1
 
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 
-include $(CONTIKI)/Makefile.include
+include Makefile.include
+
+
+gate: gate_node
+
+cu: central_unit
+
+door: door_node
+
+
