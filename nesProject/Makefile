@@ -9,18 +9,13 @@ CONTIKI_WITH_RIME = 1
 
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 
-include $(CONTIKI)/Makefile.include
+include Makefile.include
 
-mydirs: $(OBJECTDIR)
-	mkdir $(OBJECTDIR)/commons -p
-	mkdir $(OBJECTDIR)/gate -p
-	mkdir $(OBJECTDIR)/door -p
-	mkdir $(OBJECTDIR)/central_unit -p
 
-gate: mydirs gate_node
+gate: gate_node
 
-cu: mydirs central_unit
+cu: central_unit
 
-door: mydirs door_node
+door: door_node
 
 
