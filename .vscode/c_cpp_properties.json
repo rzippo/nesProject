@@ -38,7 +38,9 @@
                 "${workspaceRoot}/contiki/core/",
                 "${workspaceRoot}/contiki/platform/z1",
                 "${workspaceRoot}/contiki/cpu/msp430",
-                "/usr/include/x86_64-linux-gnu/sys"
+                "/usr/include/x86_64-linux-gnu/sys",
+                "${workspaceRoot}/nesProject",
+                "${workspaceRoot}/nesProject/gate"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",

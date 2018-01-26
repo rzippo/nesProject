@@ -11,11 +11,17 @@ CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 
 include Makefile.include
 
+mydirs:
+	mkdir $(OBJECTDIR) -p
+	mkdir $(OBJECTDIR)/commons -p
+	mkdir $(OBJECTDIR)/gate -p
+	mkdir $(OBJECTDIR)/door -p
+	mkdir $(OBJECTDIR)/central_unit -p
+	mkdir $(OBJECTDIR)/light_controller -p
 
 gate: gate_node
 
 cu: central_unit
 
-door: door_node
 
 
