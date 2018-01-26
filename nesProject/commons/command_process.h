@@ -1,0 +1,8 @@
+#ifndef NESPROJECT_COMMAND_PROCESS_H
+#define NESPROJECT_COMMAND_PROCESS_H
+
+#include "contiki.h"
+
+PROCESS_NAME(command_process);
+
+#endif //NESPROJECT_COMMAND_PROCESS_H

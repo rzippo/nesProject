@@ -7,6 +7,7 @@
 linkaddr_t centralNodeAddress;
 linkaddr_t doorNodeAddress;
 linkaddr_t gateNodeAddress;
+linkaddr_t mboxNodeAddress;
 
 void setNodesAddresses()
 {
@@ -18,4 +19,7 @@ void setNodesAddresses()
 
     gateNodeAddress.u8[0] = GATE_NODE_HIGH;
     gateNodeAddress.u8[1] = GATE_NODE_LOW;
+
+    mboxNodeAddress.u8[0] = MBOX_NODE_HIGH;
+    mboxNodeAddress.u8[1] = MBOX_NODE_LOW;
 }
