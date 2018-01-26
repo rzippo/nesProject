@@ -10,6 +10,7 @@
 #include "net/rime/rime.h"
 
 extern void processCUCommand(unsigned char command);
+extern void setNodesAddresses();
 
 static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno)
 {
