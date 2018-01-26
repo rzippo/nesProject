@@ -86,6 +86,6 @@ PROCESS_THREAD(gate_node_init, ev, data)
 {
 	PROCESS_BEGIN();
 		initGateRimeStack();
-				setLock(LOCKED);
+		setLock(LOCKED);
 	PROCESS_END();
 }

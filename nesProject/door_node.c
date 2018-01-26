@@ -84,7 +84,27 @@ void processCUCommand(unsigned char command)
 PROCESS_THREAD(door_node_main, ev, data)
 {
     PROCESS_BEGIN();
-			initDoorRimeStack();
-			setLock(LOCKED);
+		initDoorRimeStack();
+		setLock(LOCKED);
+
+		//we start with garden lights off
+		leds_off(LEDS_GREEN);
+		leds_on(LEDS_RED);
+
+		SENSORS_ACTIVATE(button_sensor);
+
+		while(1)
+		{
+			PROCESS_WAIT_EVENT();
+
+			if(ev == sensors_event && data == &button_sensor){
+				//if the alarm is on, commands must be ignored
+				if(!isAlarmOn)
+				{
+					//toggle alarm lights
+					leds_toggle(LEDS_GREEN | LEDS_RED);
+				}
+			}
+		}
     PROCESS_END();
 }

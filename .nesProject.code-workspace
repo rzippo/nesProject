@@ -6,7 +6,8 @@
 	],
 	"settings": {
 		"files.associations": {
-			"light-sensor.h": "c"
+			"light-sensor.h": "c",
+			"linkaddr.h": "c"
 		}
 	}
 }
