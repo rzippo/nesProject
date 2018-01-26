@@ -51,11 +51,12 @@ void processCUCommand(unsigned char command)
 				}
 				
 				case AVERAGE_TEMPERATURE_COMMAND:
-				{	//TODO: send average temp to CU
+				{	
 					printf("Average temp is: %d\n",
 						   (int) averageTemperature);
 
-					//cmd: 1byte, float size 4 bytes, float 4 bytes
+					//1 byte for cmd, 4 bytes for payload size, 
+					//4 bytes for float
 					unsigned char buff[9];
 
 					//1byte for cmd, 4 bytes for float
