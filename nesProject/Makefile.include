@@ -112,12 +112,7 @@ CONTIKI_OBJECTFILES = ${addprefix $(OBJECTDIR)/,${call oname, $(CONTIKI_SOURCEFI
 PROJECT_OBJECTFILES = ${addprefix $(OBJECTDIR)/,${call oname, $(PROJECT_SOURCEFILES)}}
 
 # Provide way to create $(OBJECTDIR) if it has been removed by make clean
-$(OBJECTDIR):
-	mkdir $@
-	mkdir $@/commons -p
-	mkdir $@/gate -p
-	mkdir $@/door -p
-	mkdir $@/central_unit -p
+$(OBJECTDIR): mydirs
 
 uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 

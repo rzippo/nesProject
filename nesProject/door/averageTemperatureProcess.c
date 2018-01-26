@@ -8,7 +8,7 @@
 #include "contiki.h"
 #include "dev/sht11/sht11-sensor.h"
 
-#include "constants.h"
+#include "commons/constants.h"
 
 double averageTemperature;
 

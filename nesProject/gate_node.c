@@ -2,37 +2,17 @@
 #include "contiki.h"
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
-#include "constants.h"
 #include "net/rime/rime.h"
-#include "platform/sky/dev/light-sensor.h"
 
-#include "alarm_process.h"
-#include "lock.h"
-#include "gateAutoOpeningProcess.h"
-#include "gateRimeStack.h"
-
+#include "commons/constants.h"
+#include "commons/alarm_process.h"
+#include "commons/lock.h"
+#include "commons/light.h"
+#include "gate/gateAutoOpeningProcess.h"
+#include "gate/gateRimeStack.h"
 
 PROCESS(gate_node_init, "Gate Node init Process");
 AUTOSTART_PROCESSES(&gate_node_init, &alarm_process);
-
-double getExternalLight()
-{
-	SENSORS_ACTIVATE(light_sensor);
-	
-	//TODO: capire quale dei due usare
-	
-	#if 1 //PHOTOSYNTHETIC
-		int rawReading = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
-		double externalLight = 10 * rawReading / 7;
-	#else //TOTAL_SOLAR
-		int rawReading = light_sensor.value(LIGHT_SENSOR_TOTAL_SOLAR);
-		double externalLight = 46 * rawReading / 10;
-	#endif
-	
-	SENSORS_DEACTIVATE(light_sensor);
-	
-	return externalLight;
-}
 
 void processCUCommand(unsigned char command)
 {

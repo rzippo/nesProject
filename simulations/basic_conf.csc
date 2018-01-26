@@ -26,7 +26,7 @@
       <identifier>CentralUnit</identifier>
       <description>Central Unit</description>
       <source EXPORT="discard">[CONFIG_DIR]/../nesProject/central_unit.c</source>
-      <commands EXPORT="discard">make central_unit.sky TARGET=sky</commands>
+      <commands EXPORT="discard">make cu TARGET=sky</commands>
       <firmware EXPORT="copy">[CONFIG_DIR]/../nesProject/central_unit.sky</firmware>
       <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
@@ -49,7 +49,7 @@
       <identifier>DoorNode</identifier>
       <description>Door Node</description>
       <source EXPORT="discard">[CONFIG_DIR]/../nesProject/door_node.c</source>
-      <commands EXPORT="discard">make door_node.sky TARGET=sky</commands>
+      <commands EXPORT="discard">make door TARGET=sky</commands>
       <firmware EXPORT="copy">[CONFIG_DIR]/../nesProject/door_node.sky</firmware>
       <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
@@ -72,7 +72,7 @@
       <identifier>GateNode</identifier>
       <description>Gate Node</description>
       <source EXPORT="discard">[CONFIG_DIR]/../nesProject/gate_node.c</source>
-      <commands EXPORT="discard">make gate_node.sky TARGET=sky</commands>
+      <commands EXPORT="discard">make gate TARGET=sky</commands>
       <firmware EXPORT="copy">[CONFIG_DIR]/../nesProject/gate_node.sky</firmware>
       <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
