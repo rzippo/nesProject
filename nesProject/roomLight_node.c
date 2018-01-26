@@ -53,9 +53,8 @@ PROCESS_THREAD(light_node_init, ev, data)
 void adjustLight()
 {
     double lightValue = getExternalLight();
-    printf("Here we should ajust the light output\n");    
-    //adjust
-    //print result
+    printf("Detected value %d\n", (int) lightValue);    
+    printf("Adjusting light by %d\n", (int) (LIGHT_TARGET_INTENSITY - lightValue));
 }
 
 
