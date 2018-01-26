@@ -17,6 +17,8 @@ PROCESS_THREAD(alarm_process, ev, data)
 	static struct etimer alarmBlinkingTimer;
 	static unsigned char ledStatusBeforeAlarm = 0;
 	
+	alarm_toggled_event = process_alloc_event();
+
 	PROCESS_BEGIN();
 	
 		while(1)
