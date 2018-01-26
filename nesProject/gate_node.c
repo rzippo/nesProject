@@ -54,12 +54,23 @@ void processCUCommand(unsigned char command)
 				}
 				
 				case LIGHT_VALUE_COMMAND:
-				{
-					//TODO: send result back to CU
-					
+				{					
 					double externalLight = getExternalLight();
-					printf("External light value: %d\n", (int) externalLight);
+					printf("External light value: %d\n", 
+						(int) externalLight);
+
+					//1 byte for cmd, 4 bytes for payload size, 
+					//4 bytes for float
+					unsigned char buff[9];
+
+					//payload size is 5 bytes, cmd:1bytes; float:4bytes
+					int* payloadSize = (int*)buff;
+					*payloadSize = 5;
+					*(buff+4) = LIGHT_VALUE_COMMAND;
+					float* floatBuff = (float*)(buff+5);
+					*floatBuff = (float) externalLight;
 					
+					sendFromGateToCentralUnit(buff,9);
 					break;
 				}
 				
