@@ -17,6 +17,19 @@ process_event_t light_off_event;
 
 int lightOn = 0;
 
+void processCUCommand(unsigned char command)
+{
+    if(command == SHUT_OFF_LIGHTS_COMMAND)
+    {
+        lightOn = 0;
+        process_post_synch(&light_adjuster, light_off_event, NULL);
+    }
+    else 
+    {
+        printf("Command not recognized, ignored.\n");
+    }
+}
+
 PROCESS_THREAD(light_node_init, ev, data)
 {
     PROCESS_BEGIN();

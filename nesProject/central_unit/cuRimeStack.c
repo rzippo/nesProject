@@ -51,6 +51,14 @@ static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_run
 static struct runicast_conn doorRunicastConnection;
 static struct runicast_conn gateRunicastConnection;
 
+ static void
+broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from){}
+
+static struct broadcast_conn roomLightBroadcastConnection;
+static const struct broadcast_callbacks broadcast_call = {broadcast_recv};
+
+
+
 void sendDoorNode(unsigned char* c, int bytes)
 {
 	packetbuf_copyfrom(c, bytes);
@@ -63,6 +71,12 @@ void sendGateNode(unsigned char* c, int bytes)
 	runicast_send(&gateRunicastConnection, &gateNodeAddress, MAX_RETRANSMISSIONS);
 }
 
+void sendRoomLightNodes(unsigned char* c, int bytes)
+{
+	packetbuf_copyfrom(c,bytes);
+	broadcast_send(&roomLightBroadcastConnection);
+}
+
 void initCURimeStack()
 {
 	setNodesAddresses();
@@ -71,4 +85,5 @@ void initCURimeStack()
 	
 	runicast_open(&doorRunicastConnection, CU_DOOR_CHANNEL, &runicast_calls);
 	runicast_open(&gateRunicastConnection, CU_GATE_CHANNEL, &runicast_calls);
+	broadcast_open(&roomLightBroadcastConnection, CU_ROOMLIGHT_CHANNEL, &broadcast_call);
 }

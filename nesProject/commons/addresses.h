@@ -15,6 +15,7 @@
 
 #define CU_DOOR_CHANNEL 144
 #define CU_GATE_CHANNEL 154
+#define CU_ROOMLIGHT_CHANNEL 174
 
 extern linkaddr_t centralNodeAddress;
 extern linkaddr_t doorNodeAddress;

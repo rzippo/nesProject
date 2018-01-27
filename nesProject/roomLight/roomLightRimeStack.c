@@ -13,14 +13,13 @@
 
 extern void processCUCommand(unsigned char command);
 
-static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno)
+static void recv_broadcast(struct broadcast_conn *c, const linkaddr_t *from)
 {
 	unsigned char receivedCommand = *( (unsigned char*)packetbuf_dataptr() );
 	
-	printf("runicast message received from %d.%d, seqno %d, message: %c\n",
+	printf("runicast message received from %d.%d, message: %d\n",
 		   from->u8[0],
 		   from->u8[1],
-		   seqno,
 		   receivedCommand);
 	
 	if(linkaddr_cmp(from, &centralNodeAddress))
@@ -33,22 +32,12 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 	}
 }
 
-static void sent_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions){}
-
-static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uint8_t retransmissions){}
-
-static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_runicast, timedout_runicast};
-static struct runicast_conn cuRunicastConnection;
+static const struct broadcast_callbacks broadcast_calls = {recv_broadcast};
+static struct broadcast_conn cuBroadcastConnection;
 
 void initLightRimeStack()
 {
-	printf("Light node not connected :P \n");
-
-	/*
 	setNodesAddresses();
-	
 	printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
-	
-	runicast_open(&cuRunicastConnection, CU_GATE_CHANNEL, &runicast_calls);
-	*/
+	broadcast_open(&cuBroadcastConnection, CU_ROOMLIGHT_CHANNEL, &broadcast_calls);
 }

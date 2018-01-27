@@ -67,6 +67,13 @@ void command_switch(unsigned char command)
 			
 			break;
 		}
+
+        case SHUT_OFF_LIGHTS_COMMAND:
+        {
+            printf("Broadcasting lights shut off\n");
+            sendRoomLightNodes(&command,1);
+            break;
+        }
 		
 		default:
             printf("There is no command with id %d\n", command);
