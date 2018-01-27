@@ -29,3 +29,5 @@ cu: mydirs central_unit
 door: mydirs door_node
 
 roomLight: mydirs roomLight_node
+
+mailbox: mydirs mailbox_node
