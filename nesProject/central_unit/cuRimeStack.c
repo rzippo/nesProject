@@ -10,6 +10,9 @@
 
 extern void processDoorMessage(unsigned char* message, int payloadSize);
 extern void processGateMessage(unsigned char* message, int payloadSize);
+extern void processMboxMessage(unsigned char* message, int payloadSize);
+
+extern void setNodesAddresses();
 
 static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno)
 {
@@ -31,6 +34,10 @@ static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8
 	{
 		processGateMessage(buffer+4, payloadSize);
 	}
+	else if(linkaddr_cmp(from, &mboxNodeAddress))
+	{
+		processMboxMessage(buffer, payloadSize);
+	}
 	else
 	{
 		printf("Message from unexpected node: refused\n");
@@ -50,6 +57,7 @@ static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uin
 static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_runicast, timedout_runicast};
 static struct runicast_conn doorRunicastConnection;
 static struct runicast_conn gateRunicastConnection;
+static struct runicast_conn mboxRunicastConnection;
 
  static void
 broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from){}
@@ -86,4 +94,5 @@ void initCURimeStack()
 	runicast_open(&doorRunicastConnection, CU_DOOR_CHANNEL, &runicast_calls);
 	runicast_open(&gateRunicastConnection, CU_GATE_CHANNEL, &runicast_calls);
 	broadcast_open(&roomLightBroadcastConnection, CU_ROOMLIGHT_CHANNEL, &broadcast_call);
+	runicast_open(&mboxRunicastConnection, CU_MBOX_CHANNEL, &runicast_calls);
 }

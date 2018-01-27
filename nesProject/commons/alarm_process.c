@@ -49,7 +49,9 @@ PROCESS_THREAD(alarm_process, ev, data)
 						ev == PROCESS_EVENT_TIMER &&
 						etimer_expired(&alarmBlinkingTimer) )
 			{
+				#if DEBUG
 				printf("Alarm blinking\n");
+				#endif
 				leds_toggle(LEDS_ALL);
 				etimer_reset(&alarmBlinkingTimer);
 			}

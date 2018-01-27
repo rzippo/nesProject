@@ -13,13 +13,18 @@
 #define GATE_NODE_HIGH 2
 #define GATE_NODE_LOW 0
 
+#define MBOX_NODE_HIGH 4
+#define MBOX_NODE_LOW 0
+
 #define CU_DOOR_CHANNEL 144
 #define CU_GATE_CHANNEL 154
+#define CU_MBOX_CHANNEL 164
 #define CU_ROOMLIGHT_CHANNEL 174
 
 extern linkaddr_t centralNodeAddress;
 extern linkaddr_t doorNodeAddress;
 extern linkaddr_t gateNodeAddress;
+extern linkaddr_t mboxNodeAddress;
 
 void setNodesAddresses();
 
