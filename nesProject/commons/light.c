@@ -4,8 +4,6 @@ double getExternalLight()
 {
 	SENSORS_ACTIVATE(light_sensor);
 	
-	//TODO: capire quale dei due usare
-	
 	#if 1 //PHOTOSYNTHETIC
 		int rawReading = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
 		double externalLight = 10 * rawReading / 7;

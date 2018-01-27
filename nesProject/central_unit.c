@@ -68,18 +68,25 @@ void command_switch(unsigned char command)
         }
         
         case LIGHT_VALUE_COMMAND:
-        {
-            printf("Light Value\n");
-            
-            sendGateNode(&command, 1);
-            
-            break;
-        }
-        
-        default:
-            printf("There is no command with id %d\n", command);
-            break;
-    }
+				{
+					printf("Light Value\n");
+
+					sendGateNode(&command, 1);
+
+					break;
+				}
+
+				case SHUT_OFF_LIGHTS_COMMAND:
+				{
+						printf("Broadcasting lights shut off\n");
+						sendRoomLightNodes(&command,1);
+						break;
+				}
+
+				default:
+						printf("There is no command with id %d\n", command);
+						break;
+				}
 }
 
 void processDoorMessage(unsigned char* message, int payloadSize)
