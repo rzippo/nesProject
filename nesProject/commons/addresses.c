@@ -7,7 +7,9 @@
 linkaddr_t centralNodeAddress;
 linkaddr_t doorNodeAddress;
 linkaddr_t gateNodeAddress;
-linkaddr_t mboxNodeAddress;
+linkaddr_t htNodeAddress;
+linkaddr_t rlNodeAddress;
+
 
 void setNodesAddresses()
 {
@@ -20,6 +22,9 @@ void setNodesAddresses()
     gateNodeAddress.u8[0] = GATE_NODE_HIGH;
     gateNodeAddress.u8[1] = GATE_NODE_LOW;
 
-    mboxNodeAddress.u8[0] = MBOX_NODE_HIGH;
-    mboxNodeAddress.u8[1] = MBOX_NODE_LOW;
+    htNodeAddress.u8[0] = HT_NODE_HIGH;
+    htNodeAddress.u8[1] = HT_NODE_LOW;
+
+    rlNodeAddress.u8[0] = RL_NODE_HIGH;
+    rlNodeAddress.u8[1] = RL_NODE_LOW;
 }

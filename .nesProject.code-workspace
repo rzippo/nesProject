@@ -12,7 +12,8 @@
 			"curimestack.h": "c",
 			"command_process.h": "c",
 			"addresses.h": "c",
-			"light.h": "c"
+			"light.h": "c",
+			"lock.h": "c"
 		}
 	}
 }

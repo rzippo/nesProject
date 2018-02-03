@@ -68,25 +68,14 @@ void command_switch(unsigned char command)
         }
         
         case LIGHT_VALUE_COMMAND:
-				{
-					printf("Light Value\n");
+        {
+            printf("Light Value\n");
 
-					sendGateNode(&command, 1);
+            sendGateNode(&command, 1);
 
-					break;
-				}
-
-				case SHUT_OFF_LIGHTS_COMMAND:
-				{
-						printf("Broadcasting lights shut off\n");
-						sendRoomLightNodes(&command,1);
-						break;
-				}
-
-				default:
-						printf("There is no command with id %d\n", command);
-						break;
-				}
+            break;
+        }
+    }
 }
 
 void processDoorMessage(unsigned char* message, int payloadSize)
@@ -111,22 +100,6 @@ void processGateMessage(unsigned char* message, int payloadSize)
         float lightValue = *( (float*)(message+1));
         printf("Light value is: %d\n",
                (int) lightValue);
-    }
-}
-
-void processMboxMessage(unsigned char* message, int payloadSize)
-{
-    unsigned char cmd = message[0];
-
-    if(cmd == MBOX_EMPTY)
-    {
-        printf("Mailbox is empty\n");
-        leds_off(LEDS_GREEN);
-    }
-    else if(cmd == MBOX_FULL)
-    {
-        printf("Mailbox is full\n");
-        leds_on(LEDS_GREEN);
     }
 }
 
