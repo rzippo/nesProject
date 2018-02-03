@@ -9,24 +9,61 @@
 #include "roomLight/roomLightRimeStack.h"
 
 PROCESS(light_node_init, "Light node init process");
-PROCESS(light_adjuster, "Light adjuster process");
 AUTOSTART_PROCESSES(&light_node_init);
 
-process_event_t light_on_event;
-process_event_t light_off_event;
-
+unsigned int lightIntensity = LIGHT_DEFAULT_INTENSITY;
 int lightOn = 0;
 
-void processCUCommand(unsigned char command)
+//by default, if the lights is switched on when no message 
+//has been received, the light is at max intensity
+int state = RL_TURN_ON;
+
+void setLeds(unsigned char command)
 {
-    if(command == SHUT_OFF_LIGHTS_COMMAND)
+    if(command == RL_DIM)
     {
-        lightOn = 0;
-        process_post_synch(&light_adjuster, light_off_event, NULL);
+        lightIntensity = LIGHT_DEFAULT_INTENSITY/10;
+        leds_off(LEDS_ALL);
+        leds_on(LEDS_BLUE);
+        printf("Light dimmed to 10%%: %d\n", lightIntensity);
     }
-    else 
+
+    if(command == RL_BRIGHTEN)
     {
-        printf("Command not recognized, ignored.\n");
+        lightIntensity = LIGHT_DEFAULT_INTENSITY*3/10;
+        leds_off(LEDS_ALL);
+        leds_on(LEDS_GREEN);
+        printf("Light brightened to 30%%: %d\n", lightIntensity);
+    }
+
+    if(command == RL_TURN_ON)
+    {
+        lightIntensity = LIGHT_DEFAULT_INTENSITY;
+        leds_off(LEDS_ALL);
+        leds_on(LEDS_RED);
+        printf("Light set at maximum intensity: %d\n", lightIntensity);
+    }
+
+    if (command == RL_OFF)
+    {
+        leds_off(LEDS_ALL);
+        printf("Light turned off\n");
+    }
+}
+
+void processHTCommand(unsigned char command)
+{
+    if(command == RL_DIM || command == RL_BRIGHTEN || command == RL_TURN_ON)
+        state = command;
+    else
+    {
+        printf("Command not recognized, ignored\n");
+        return;
+    }
+
+    if(lightOn)
+    {
+        setLeds(command);
     }
 }
 
@@ -34,10 +71,6 @@ PROCESS_THREAD(light_node_init, ev, data)
 {
     PROCESS_BEGIN();
         initLightRimeStack();
-        light_on_event = process_alloc_event();
-        light_off_event = process_alloc_event();
-
-        process_start(&light_adjuster, NULL);
 
         SENSORS_ACTIVATE(button_sensor);
         while(1)
@@ -46,57 +79,17 @@ PROCESS_THREAD(light_node_init, ev, data)
             if(ev == sensors_event && data == &button_sensor)
             {
                 lightOn = !lightOn;
-                printf("Button pressed, next state: %d\n", lightOn);
-                switch(lightOn)
+                if(lightOn)
                 {
-                    case 0:
-                        process_post_synch(&light_adjuster, light_off_event, NULL);
-                        break;
-
-                    case 1:
-                        process_post_synch(&light_adjuster, light_on_event, NULL);
-                        break;
+                    setLeds(state);
                 }
+                else
+                {
+                    setLeds(RL_OFF);
+                }
+                printf("Button pressed, next state: %s\n", lightOn == 0 ? "OFF" : "ON");
             }
         }
 
-    PROCESS_END();
-}
-
-void adjustLight()
-{
-    double lightValue = getExternalLight();
-    printf("Detected value %d\n", (int) lightValue);    
-    printf("Adjusting light by %d\n", (int) (LIGHT_TARGET_INTENSITY - lightValue));
-}
-
-
-PROCESS_THREAD(light_adjuster, ev, data)
-{
-    static struct etimer lightAdjustmentTimer;
-
-    PROCESS_BEGIN();
-        while(1)
-        {
-            PROCESS_WAIT_EVENT();
-            if(ev == light_on_event)
-            {
-                printf("Light is now on\n");
-                leds_on(LEDS_BLUE); 
-                adjustLight();
-                etimer_set(&lightAdjustmentTimer, LIGHT_ADJUSTMENT_PERIOD * CLOCK_SECOND);
-            }
-            else if(ev == light_off_event)
-            {
-                printf("Light is now off\n");
-                leds_off(LEDS_BLUE);
-                etimer_stop(&lightAdjustmentTimer);
-            }
-            else if(ev == PROCESS_EVENT_TIMER && etimer_expired(&lightAdjustmentTimer))
-            {
-                adjustLight();
-                etimer_reset(&lightAdjustmentTimer);
-            }
-        }
     PROCESS_END();
 }

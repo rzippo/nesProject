@@ -3,8 +3,8 @@ PROJECT_SOURCEFILES += \
     central_unit/cuRimeStack.c \
     gate/gateRimeStack.c gate/gateAutoOpeningProcess.c \
     door/doorRimeStack.c door/averageTemperatureProcess.c door/doorAutoOpeningProcess.c \
-	  roomLight/roomLightRimeStack.c \
-	  mailbox/mboxRimeStack.c \
+	home_theater/htRimeStack.c \
+	roomLight/roomLightRimeStack.c
 
 CONTIKI = ../contiki
 CONTIKI_WITH_RIME = 1
@@ -19,8 +19,8 @@ mydirs:
 	mkdir $(OBJECTDIR)/gate -p
 	mkdir $(OBJECTDIR)/door -p
 	mkdir $(OBJECTDIR)/central_unit -p
+	mkdir $(OBJECTDIR)/home_theater -p
 	mkdir $(OBJECTDIR)/roomLight -p
-	mkdir $(OBJECTDIR)/mailbox -p
 
 gate: mydirs gate_node
 
@@ -28,6 +28,8 @@ cu: mydirs central_unit
 
 door: mydirs door_node
 
-roomLight: mydirs roomLight_node
+ht: mydirs hometheater_node
 
-mailbox: mydirs mailbox_node
+rl: mydirs roomLight_node
+
+all: gate cu door ht rl
