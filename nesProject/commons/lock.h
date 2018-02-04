@@ -1,7 +1,3 @@
-//
-// Created by Raff on 10/11/2017.
-//
-
 #ifndef NESPROJECT_LOCK_H
 #define NESPROJECT_LOCK_H
 

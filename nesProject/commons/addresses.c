@@ -1,6 +1,3 @@
-//
-// Created by enric on 29/10/2017.
-//
 #include <stdio.h>
 #include "addresses.h"
 

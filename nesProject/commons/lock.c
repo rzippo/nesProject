@@ -1,7 +1,3 @@
-//
-// Created by Raff on 10/11/2017.
-//
-
 #include "lock.h"
 
 #include "contiki.h"

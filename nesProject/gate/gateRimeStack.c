@@ -1,7 +1,3 @@
-//
-// Created by Raff on 31/10/2017.
-//
-
 #include "gateRimeStack.h"
 #include "commons/addresses.h"
 #include "commons/constants.h"

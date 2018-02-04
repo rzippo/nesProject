@@ -1,7 +1,3 @@
-//
-// Created by Raff on 06/11/2017.
-//
-
 #include "averageTemperatureProcess.h"
 
 #include "stdio.h"

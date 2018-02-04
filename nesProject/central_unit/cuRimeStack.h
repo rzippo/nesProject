@@ -1,7 +1,3 @@
-//
-// Created by Raff on 31/10/2017.
-//
-
 #ifndef NESPROJECT_CURIMESTACK_H
 #define NESPROJECT_CURIMESTACK_H
 

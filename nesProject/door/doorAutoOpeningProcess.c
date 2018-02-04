@@ -1,7 +1,3 @@
-//
-// Created by Raff on 09/11/2017.
-//
-
 #include "doorAutoOpeningProcess.h"
 
 #include "contiki.h"
