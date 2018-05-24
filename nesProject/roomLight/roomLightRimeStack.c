@@ -35,5 +35,5 @@ void initLightRimeStack()
 {
 	setNodesAddresses();
 	printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
-	broadcast_open(&cuBroadcastConnection, CU_ROOMLIGHT_CHANNEL, &broadcast_calls);
+	broadcast_open(&cuBroadcastConnection, ROOMLIGHTS_BROADCAST_CHANNEL, &broadcast_calls);
 }

@@ -6,14 +6,12 @@
 #include "dev/button-sensor.h"
 
 #include "commons/constants.h"
-#include "commons/command_process.h"
 #include "central_unit/cuRimeStack.h"
 
 
 PROCESS(central_unit_main, "Central Unit Main Process");
 
-AUTOSTART_PROCESSES(&central_unit_main, &command_process);
-
+AUTOSTART_PROCESSES(&central_unit_main);
 
 void command_switch(unsigned char command)
 {
@@ -23,10 +21,13 @@ void command_switch(unsigned char command)
     {
         printf("Alarm Toggled\n");
         isAlarmOn = !isAlarmOn;
-        
-        sendDoorNode(&command, 1);
-        sendGateNode(&command, 1);
+        char alarmCommand;
+        if(isAlarmOn)
+            alarmCommand = ALARM_ON_COMMAND;
+        else
+            alarmCommand = ALARM_OFF_COMMAND;
 
+        broadcastAlarm(alarmCommand);
         return;
     }
 
@@ -68,25 +69,25 @@ void command_switch(unsigned char command)
         }
         
         case LIGHT_VALUE_COMMAND:
-				{
-					printf("Light Value\n");
+        {
+            printf("Light Value\n");
 
-					sendGateNode(&command, 1);
+            sendGateNode(&command, 1);
 
-					break;
-				}
+            break;
+        }
 
-				case SHUT_OFF_LIGHTS_COMMAND:
-				{
-						printf("Broadcasting lights shut off\n");
-						sendRoomLightNodes(&command,1);
-						break;
-				}
+        case SHUT_OFF_LIGHTS_COMMAND:
+        {
+                printf("Broadcasting lights shut off\n");
+                broadcastShutOff();
+                break;
+        }
 
-				default:
-						printf("There is no command with id %d\n", command);
-						break;
-				}
+        default:
+                printf("There is no command with id %d\n", command);
+                break;
+        }
 }
 
 void processDoorMessage(unsigned char* message, int payloadSize)
@@ -99,7 +100,6 @@ void processDoorMessage(unsigned char* message, int payloadSize)
         printf("Average received temp is: %d\n",
                (int) averageTemperature);
     }
-
 }
 
 void processGateMessage(unsigned char* message, int payloadSize)
@@ -118,6 +118,8 @@ void processMboxMessage(unsigned char* message, int payloadSize)
 {
     unsigned char cmd = message[0];
 
+    //todo: implement blinking
+    //todo: implement pulling?
     if(cmd == MBOX_EMPTY)
     {
         printf("Mailbox is empty\n");
@@ -132,8 +134,47 @@ void processMboxMessage(unsigned char* message, int payloadSize)
 
 PROCESS_THREAD(central_unit_main, ev, data)
 {
-    PROCESS_BEGIN();
-	initCURimeStack();
-    leds_off(LEDS_ALL);
+    static int isSetupDone = 0;
+	static struct etimer commandTimeout;
+	static unsigned char buttonCount = 0;
+	
+	PROCESS_BEGIN();
+	SENSORS_ACTIVATE(button_sensor);
+	
+    if(!isSetupDone)
+    {
+        initCURimeStack();
+        leds_off(LEDS_ALL);
+        isSetupDone = 1;
+    }
+
+	while(1)
+	{
+		PROCESS_WAIT_EVENT();
+
+		if(ev == sensors_event && data == &button_sensor){
+			++buttonCount;
+			printf("Button pressed %d times\n", buttonCount);
+
+			if(buttonCount == 1)//first press, set the timer
+			{
+				etimer_set( &commandTimeout, COMMAND_TIMEOUT * CLOCK_SECOND );
+			}
+			else
+			{
+				etimer_restart(&commandTimeout);
+			}
+		}
+		else if(ev == PROCESS_EVENT_TIMER)
+		{
+			if(buttonCount != 0 && etimer_expired(&commandTimeout))
+			{
+				printf("Timer expired: count is %d\n", buttonCount);
+				etimer_stop(&commandTimeout);
+				command_switch(buttonCount);
+				buttonCount = 0;
+			}
+		}
+	}
     PROCESS_END();
 }

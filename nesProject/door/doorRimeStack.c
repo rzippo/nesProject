@@ -35,6 +35,30 @@ static void timedout_runicast(struct runicast_conn *c, const linkaddr_t *to, uin
 static const struct runicast_callbacks runicast_calls = {recv_runicast, sent_runicast, timedout_runicast};
 static struct runicast_conn cuRunicastConnection;
 
+static void broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from)
+{
+	unsigned char receivedCommand = *( (unsigned char*)packetbuf_dataptr() );
+
+	printf("Broadcast message received from %d.%d, seqno %d, message: %c\n",
+		   from->u8[0],
+		   from->u8[1],
+		   seqno,
+		   receivedCommand);
+
+	if( linkaddr_cmp(from, &centralNodeAddress))
+	{
+		//todo: define callback
+		//processCUCommand(receivedCommand);
+	}
+	else
+	{
+		printf("Message from unexpected node: refused\n");
+	}
+}
+static const struct broadcast_callbacks broadcast_call = {broadcast_recv};
+
+static struct broadcast_conn alarmBroadcastConnection;
+
 void initDoorRimeStack()
 {
 	setNodesAddresses();
@@ -42,6 +66,7 @@ void initDoorRimeStack()
 	printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
 	
 	runicast_open(&cuRunicastConnection, CU_DOOR_CHANNEL, &runicast_calls);
+	broadcast_open(&alarmBroadcastConnection, ALARM_BROADCAST_CHANNEL, &broadcast_call);
 }
 
 void sendFromDoorToCentralUnit(unsigned char *cmd, int bytes)
