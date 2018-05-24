@@ -1,0 +1,40 @@
+Central Unit
+    - Address 3.0
+    Commands
+        - button can be pressed up to 5(+1 extension) times with up to 4 seconds between each press.
+        - Has to print help text when ready to receive a command
+        - A command is executed asynchronously: don't wait for execution
+    Commands list
+        1: toggle alarm
+        2: toggle gate lock
+        3: automatic opening and closing of gate and door. Nodes blink blue led (2 sec period) while gate/door unlocked. Opening lasts 16 sec, door waits 14 sec first.
+            [Add] Gate node shows locking as specified for gate manual lock.
+        4: get average temperature from Door Node
+        5: get external light value from Gate Node
+        [Add] 6: Shuts off all auto-adjusting lights.
+
+    [Add] Pull Smart Mailbox state every 20 minutes. Blue led is on when mailbox is full. When mailbox goes from empty to full, blue led blinks for 8 sec than stays on until it is emptied.
+
+Door Node
+    - Address 1.0
+    - When alarm is on, pause everything else and blink all leds with 2s period. All commands are disabled. When alarm is deactivated, return to previous state.
+    - Measure temperature every 10 sec, keep 5 samples. Sends average on request.
+    - Pressing the button toggles garden lights: red led on when lights off, green led on when lights on.
+     
+Gate Node
+    - Address 2.0
+    - Alarm function as in Door Node
+    - When gate is locked green led is off, red is on. Viceversa for gate unlocked.
+    - Measures external light on request
+    
+[Add] Smart Mailbox
+    - Address 4.0
+    - Simulates empting and fulling with pressing of the button
+    - Updates central node on state change (push)
+    - Sends current state to CU on request (pull)
+
+[Add] Auto-adjusting lights
+    - Listens in broadcast channel, no address
+    - Light node with, a button to switch it on/off. Being on is signaled with a blue led on.
+    - The light sensor is used to detect the natural light and balance it, e.g. if the natural light is 40% of the desired level it's balanced by 60% from the artificial light. Each light node is independent.
+    - Listens for broadcast "shut off all" command from CU
