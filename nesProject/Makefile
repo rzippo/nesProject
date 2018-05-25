@@ -1,5 +1,5 @@
 PROJECT_SOURCEFILES += \
-    commons/addresses.c commons/alarm_process.c commons/lock.c commons/light.c commons/command_process.c \
+    commons/addresses.c commons/alarm_process.c commons/lock.c commons/light.c \
     central_unit/cuRimeStack.c \
     gate/gateRimeStack.c gate/gateAutoOpeningProcess.c \
     door/doorRimeStack.c door/averageTemperatureProcess.c door/doorAutoOpeningProcess.c \

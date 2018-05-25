@@ -79,7 +79,7 @@ void sendGateNode(unsigned char* c, int bytes)
 
 void broadcastAlarm(char command)
 {
-	packetbuf_copyfrom(&commmand, sizeof(char));
+	packetbuf_copyfrom(&command, sizeof(char));
 	broadcast_send(&alarmBroadcastConnection);
 };
 
