@@ -11,7 +11,6 @@
 
 #include "door/doorRimeStack.h"
 #include "commons/alarm_process.h"
-#include "commons/lock.h"
 #include "door/doorAutoOpeningProcess.h"
 #include "door/averageTemperatureProcess.h"
 
@@ -85,8 +84,6 @@ PROCESS_THREAD(door_node_main, ev, data)
 {
     PROCESS_BEGIN();
 		initDoorRimeStack();
-		//todo: door must NOT use leds to signal open/close
-		setLock(LOCKED);
 
 		//we start with garden lights off
 		leds_off(LEDS_ALL);
@@ -103,7 +100,7 @@ PROCESS_THREAD(door_node_main, ev, data)
 				//if the alarm is on, commands must be ignored
 				if(!isAlarmOn)
 				{
-					//toggle garden lights
+					printf("Garden lights toggled\n");
 					leds_toggle(LEDS_GREEN | LEDS_RED);
 				}
 			}
