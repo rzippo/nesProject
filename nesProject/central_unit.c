@@ -8,6 +8,7 @@
 #include "commons/constants.h"
 #include "central_unit/cuRimeStack.h"
 
+static int isAlarmOn = 0;
 
 PROCESS(central_unit_main, "Central Unit Main Process");
 
@@ -15,8 +16,6 @@ AUTOSTART_PROCESSES(&central_unit_main);
 
 void command_switch(unsigned char command)
 {
-    static int isAlarmOn = 0;
-
     if(command == ALARM_TOGGLE_COMMAND)
     {
         printf("Alarm Toggled\n");
@@ -130,6 +129,27 @@ void processMboxMessage(unsigned char* message, int payloadSize)
     }
 }
 
+void helpText()
+{
+    printf("Ready to receive command\n");
+    if(isAlarmOn)
+    {
+        printf("!! Alarm is ON !!\n");
+        printf("Only accepted command is \n");
+        printf("\t1: Turn alarm OFF\n");
+    }
+    else
+    {
+        printf("Accepted commands:\n");
+        printf("\t1: Turn alarm ON\n");
+        printf("\t2: Toogle gate lock\n");
+        printf("\t3: Automatic opening and closing of gate and door\n");
+        printf("\t4: Get average temperature from door node\n");
+        printf("\t5: Get external light value from gate node\n");
+        printf("\t6: Shut off all home lights\n");
+    }
+}
+
 PROCESS_THREAD(central_unit_main, ev, data)
 {
 	static struct etimer commandTimeout;
@@ -140,6 +160,8 @@ PROCESS_THREAD(central_unit_main, ev, data)
 	SENSORS_ACTIVATE(button_sensor);
     leds_off(LEDS_ALL);
     initCURimeStack();
+
+    helpText();
 
 	while(1)
 	{
@@ -166,6 +188,7 @@ PROCESS_THREAD(central_unit_main, ev, data)
 				etimer_stop(&commandTimeout);
 				command_switch(buttonCount);
 				buttonCount = 0;
+                helpText();
 			}
 		}
 	}
