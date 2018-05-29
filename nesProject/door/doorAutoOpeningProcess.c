@@ -17,6 +17,8 @@ PROCESS_THREAD(doorAutoOpeningProcess, ev, data)
 	static int blinkings;
 	static clock_time_t remainingDelay;
 	
+	static int skipTimerReinit = 0;
+
 	PROCESS_BEGIN();
 		
 		printf("Door auto opening: started\n");
@@ -25,18 +27,28 @@ PROCESS_THREAD(doorAutoOpeningProcess, ev, data)
 
 		while(1)
 		{
-			printf("Door auto opening: waiting initial delay\n");
-			etimer_set(&initialDelay, remainingDelay);
+			if(!skipTimerReinit)
+			{
+				printf("Door auto opening: waiting initial delay\n");
+				etimer_set(&initialDelay, remainingDelay);
+			}
+			skipTimerReinit = 0;
+
 			PROCESS_WAIT_EVENT();
 			if(ev == PROCESS_EVENT_TIMER && etimer_expired(&initialDelay))
 				break;
-			else if( ev == alarm_toggled_event)
+			else if( ev == alarm_on_event)
 			{
 				printf("Door auto opening: delay interrupted by alarm\n");
 				remainingDelay = etimer_expiration_time(&initialDelay) - clock_time();
 				etimer_stop(&initialDelay);
-				PROCESS_WAIT_EVENT_UNTIL(ev == alarm_toggled_event);
+				PROCESS_WAIT_EVENT_UNTIL(ev == alarm_off_event);
 				printf("Door auto opening: alarm stopped, resuming delay\n");
+			}
+			else
+			{
+				//Ininfluent event, timer must not be reset
+				skipTimerReinit = 1;
 			}
 		}
 		
@@ -49,7 +61,12 @@ PROCESS_THREAD(doorAutoOpeningProcess, ev, data)
 		
 		while(blinkings < AUTO_OPENING_BLINKINGS - 1)
 		{
-			etimer_set(&blinkingTimer, (AUTO_OPENING_LED_PERIOD / 2) * CLOCK_SECOND);
+			if(!skipTimerReinit)
+			{
+				etimer_set(&blinkingTimer, (AUTO_OPENING_LED_PERIOD / 2) * CLOCK_SECOND);
+			}
+			skipTimerReinit = 0;
+			
 			PROCESS_WAIT_EVENT();
 			if(ev == PROCESS_EVENT_TIMER && etimer_expired(&blinkingTimer))
 			{
@@ -58,12 +75,17 @@ PROCESS_THREAD(doorAutoOpeningProcess, ev, data)
 				etimer_reset(&blinkingTimer);
 				blinkings++;
 			}
-			else if(ev == alarm_toggled_event)
+			else if(ev == alarm_on_event)
 			{
 				printf("Door auto opening: blinking interrupted by alarm\n");
 				etimer_stop(&blinkingTimer);
-				PROCESS_WAIT_EVENT_UNTIL(ev == alarm_toggled_event);
+				PROCESS_WAIT_EVENT_UNTIL(ev == alarm_off_event);
 				printf("Door auto opening: alarm stopped, resuming blinking\n");
+			}
+			else
+			{
+				//Ininfluent event, timer must not be reset
+				skipTimerReinit = 1;
 			}
 		}
 		

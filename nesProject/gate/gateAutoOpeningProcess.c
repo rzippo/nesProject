@@ -14,6 +14,8 @@ PROCESS_THREAD(gateAutoOpeningProcess, ev, data)
 {
 	static struct etimer blinkingTimer;
 	static int blinkings;
+
+	static int skipTimerReinit = 0;
 	
 	PROCESS_BEGIN();
 		printf("Gate auto opening: gate opened\n");
@@ -27,7 +29,12 @@ PROCESS_THREAD(gateAutoOpeningProcess, ev, data)
 		
 		while(blinkings < AUTO_OPENING_BLINKINGS - 1)
 		{
-			etimer_set(&blinkingTimer, (AUTO_OPENING_LED_PERIOD / 2) * CLOCK_SECOND);
+			if(!skipTimerReinit)
+			{
+				etimer_set(&blinkingTimer, (AUTO_OPENING_LED_PERIOD / 2) * CLOCK_SECOND);
+			}
+			skipTimerReinit = 0;
+			
 			PROCESS_WAIT_EVENT();
 			if(ev == PROCESS_EVENT_TIMER && etimer_expired(&blinkingTimer))
 			{
@@ -36,12 +43,17 @@ PROCESS_THREAD(gateAutoOpeningProcess, ev, data)
 				etimer_reset(&blinkingTimer);
 				blinkings++;
 			}
-			else if(ev == alarm_toggled_event)
+			else if(ev == alarm_on_event)
 			{
 				printf("Gate auto opening: blinking interrupted by alarm\n");
 				etimer_stop(&blinkingTimer);
-				PROCESS_WAIT_EVENT_UNTIL(ev == alarm_toggled_event);
+				PROCESS_WAIT_EVENT_UNTIL(ev == alarm_off_event);
 				printf("Gate auto opening: alarm stopped, resuming blinking\n");
+			}
+			else
+			{
+				//Ininfluent event, timer must not be reset
+				skipTimerReinit = 1;
 			}
 		}
 		

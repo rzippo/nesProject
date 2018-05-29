@@ -7,7 +7,8 @@
 
 #include "constants.h"
 
-process_event_t alarm_toggled_event;
+process_event_t alarm_on_event;
+process_event_t alarm_off_event;
 unsigned char isAlarmOn = 0;
 
 PROCESS(alarm_process, "Alarm blinking process");
@@ -18,13 +19,15 @@ PROCESS_THREAD(alarm_process, ev, data)
 	static unsigned char ledStatusBeforeAlarm = 0;
 	
 	PROCESS_BEGIN();
-		alarm_toggled_event = process_alloc_event();
+		
+		alarm_on_event = process_alloc_event();
+		alarm_off_event = process_alloc_event();
 
 		while(1)
 		{
 			PROCESS_WAIT_EVENT();
 			
-			if(ev == alarm_toggled_event)
+			if(ev == alarm_on_event)
 			{
 				if(isAlarmOn == 0)
 				{
@@ -39,11 +42,22 @@ PROCESS_THREAD(alarm_process, ev, data)
 				}
 				else
 				{
+					printf("Alarm was already ON\n");
+				}
+			}
+			else if(ev == alarm_off_event)
+			{
+				if(isAlarmOn == 1)
+				{
 					printf("Alarm Toggled: OFF\n");
 					
 					isAlarmOn = 0;
 					leds_set(ledStatusBeforeAlarm);
 					etimer_stop(&alarmBlinkingTimer);
+				}
+				else
+				{
+					printf("Alarm was already OFF\n");
 				}
 			}
 			else if ( 	isAlarmOn &&

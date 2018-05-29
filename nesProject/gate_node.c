@@ -20,8 +20,8 @@ void processAlarmCommand(unsigned char command)
 	{
 		if(!isAlarmOn)
 		{
-			process_post_synch(&gateAutoOpeningProcess, alarm_toggled_event, NULL);
-			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
+			process_post_synch(&gateAutoOpeningProcess, alarm_on_event, NULL);
+			process_post_synch(&alarm_process, alarm_on_event, NULL);
 		}
 		else
 		{
@@ -32,8 +32,8 @@ void processAlarmCommand(unsigned char command)
 	{
 		if(isAlarmOn)
 		{
-			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
-			process_post_synch(&gateAutoOpeningProcess, alarm_toggled_event, NULL);
+			process_post_synch(&alarm_process, alarm_off_event, NULL);
+			process_post_synch(&gateAutoOpeningProcess, alarm_off_event, NULL);
 		}
 		else
 		{
