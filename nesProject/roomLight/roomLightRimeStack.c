@@ -13,7 +13,7 @@ static void recv_broadcast(struct broadcast_conn *c, const linkaddr_t *from)
 {
 	unsigned char receivedCommand = *( (unsigned char*)packetbuf_dataptr() );
 	
-	printf("runicast message received from %d.%d, message: %d\n",
+	printf("broadcast message received from %d.%d, message: %d\n",
 		   from->u8[0],
 		   from->u8[1],
 		   receivedCommand);
