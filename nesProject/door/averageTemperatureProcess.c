@@ -6,6 +6,10 @@
 
 #include "commons/constants.h"
 
+#if RANDOM_TEMPERATURE_PERTURBATION
+	#include "lib/random.h"
+#endif
+
 double averageTemperature;
 
 double average(double v[], int size)
@@ -29,7 +33,9 @@ PROCESS_THREAD(averageTemperatureProcess, ev, data)
 	static int didIndexWrapAround = 0;
 	
 	PROCESS_BEGIN();
-		
+		#if RANDOM_TEMPERATURE_PERTURBATION
+		random_init(150);
+		#endif
 		etimer_set(&temperatureTimer, TEMPERATURE_MEASURING_PERIOD * CLOCK_SECOND);
 		
 		while(1)
@@ -47,7 +53,18 @@ PROCESS_THREAD(averageTemperatureProcess, ev, data)
 			double measuredTemperature = -39.60 + 0.01*rawTemperatureReading;
 			//printf("Temp measured %d\n", (int)measuredTemperature);
 			
+			#if RANDOM_TEMPERATURE_PERTURBATION
+			//Generates a random number from -10 to +10, to be used as percentual perturbation
+			int randomPerturbation = (random_rand() % 21) - 10;
+			
+			double multiplyingCoefficient = ((double)(100 + randomPerturbation))/100;
+			double modifiedTemperature = measuredTemperature * multiplyingCoefficient;
+
+			temperatureReadings[lastTemperatureIndex] = modifiedTemperature;
+			#else
 			temperatureReadings[lastTemperatureIndex] = measuredTemperature;
+			#endif
+
 			lastTemperatureIndex = (lastTemperatureIndex + 1) % MAX_TEMPERATURE_READINGS;
 			
 			if(lastTemperatureIndex == 0)
@@ -59,10 +76,6 @@ PROCESS_THREAD(averageTemperatureProcess, ev, data)
 				averageTemperature = average(temperatureReadings, lastTemperatureIndex);
 			
 			etimer_reset(&temperatureTimer);
-			
-			//printf("Measured temperature: %d ; Average temperature: %d \n",
-			//	   (int) measuredTemperature,
-			//	   (int) averageTemperature);
 		}
 	
 	PROCESS_END();
