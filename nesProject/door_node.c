@@ -18,9 +18,9 @@ PROCESS(door_node_main, "Door Node Main Process");
 
 AUTOSTART_PROCESSES(&door_node_main, &alarm_process, &averageTemperatureProcess);
 
-void processCUCommand(unsigned char command)
+void processAlarmCommand(unsigned char command)
 {
-	if( command == ALARM_TOGGLE_COMMAND )
+	if(command == ALARM_ON_COMMAND)
 	{
 		if(!isAlarmOn)
 		{
@@ -29,53 +29,69 @@ void processCUCommand(unsigned char command)
 		}
 		else
 		{
+			printf("Alarm is already ON: command refused\n");
+		}
+	}
+	else if(command == ALARM_OFF_COMMAND)
+	{
+		if(isAlarmOn)
+		{
 			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
 			process_post_synch(&doorAutoOpeningProcess, alarm_toggled_event, NULL);
+		}
+		else
+		{
+			printf("Alarm is already OFF: command refused\n");
 		}
 	}
 	else
 	{
-		if(isAlarmOn)
+		printf("Unrecognized command in alarm broadcast channel\n");
+	}
+}
+
+void processCUCommand(unsigned char command)
+{
+	if(isAlarmOn)
+	{
+		printf("Alarm is ON: command %c refused\n", command);
+	}
+	else
+	{
+		switch(command)
 		{
-			printf("Alarm is ON: command %c refused\n", command);
-		}
-		else
-		{
-			switch(command)
+			case DOORS_OPEN_COMMAND:
 			{
-				case DOORS_OPEN_COMMAND:
-				{
-					process_start(&doorAutoOpeningProcess, NULL);
-					break;
-				}
-				
-				case AVERAGE_TEMPERATURE_COMMAND:
-				{	
-					printf("Average temp is: %d\n",
-						   (int) averageTemperature);
-
-					//1 byte for cmd, 4 bytes for payload size, 
-					//4 bytes for float
-					unsigned char buff[9];
-
-					//1byte for cmd, 4 bytes for float
-					int* payloadSize = (int*)buff;
-					*payloadSize = 5;
-
-					*(buff+4) = AVERAGE_TEMPERATURE_COMMAND;
-
-					float* floatBuff = (float*)(buff+5);
-					*floatBuff = (float)averageTemperature;
-
-                    sendFromDoorToCentralUnit(buff, 9);
-
-					break;
-				}
-				
-				default:
-					printf("Command %d not recognized from this node\n", command);
-					break;
+				process_start(&doorAutoOpeningProcess, NULL);
+				break;
 			}
+			
+			case AVERAGE_TEMPERATURE_COMMAND:
+			{	
+				printf("Average temp is: %d\n",
+						(int) averageTemperature);
+
+				//1 byte for cmd, 4 bytes for payload size, 
+				//4 bytes for float
+				unsigned char buff[9];
+
+				//1byte for cmd, 4 bytes for float
+				int* payloadSize = (int*)buff;
+				*payloadSize = 5;
+
+				*(buff+4) = AVERAGE_TEMPERATURE_COMMAND;
+
+				float* floatBuff = (float*)(buff+5);
+				*floatBuff = (float)averageTemperature;
+
+				sendFromDoorToCentralUnit(buff, 9);
+
+				break;
+			}
+			
+			default:
+				printf("Command %d not recognized from this node\n", command);
+				break;
 		}
 	}
 }
