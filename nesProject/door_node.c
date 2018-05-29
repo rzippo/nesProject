@@ -113,11 +113,14 @@ PROCESS_THREAD(door_node_main, ev, data)
 
 			if(ev == sensors_event && data == &button_sensor)
 			{
-				//if the alarm is on, commands must be ignored
 				if(!isAlarmOn)
 				{
 					printf("Garden lights toggled\n");
 					leds_toggle(LEDS_GREEN | LEDS_RED);
+				}
+				else
+				{
+					printf("Alarm is on, command ignored\n");
 				}
 			}
 		}
