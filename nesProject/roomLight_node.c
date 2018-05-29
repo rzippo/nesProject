@@ -8,9 +8,9 @@
 #include "commons/light.h"
 #include "roomLight/roomLightRimeStack.h"
 
-PROCESS(light_node_init, "Light node init process");
+PROCESS(light_node_main, "Light node init process");
 PROCESS(light_adjuster, "Light adjuster process");
-AUTOSTART_PROCESSES(&light_node_init);
+AUTOSTART_PROCESSES(&light_node_main);
 
 process_event_t light_on_event;
 process_event_t light_off_event;
@@ -30,16 +30,16 @@ void processCUCommand(unsigned char command)
     }
 }
 
-PROCESS_THREAD(light_node_init, ev, data)
+PROCESS_THREAD(light_node_main, ev, data)
 {
     PROCESS_BEGIN();
-        initLightRimeStack();
         light_on_event = process_alloc_event();
         light_off_event = process_alloc_event();
-
         process_start(&light_adjuster, NULL);
-
         SENSORS_ACTIVATE(button_sensor);
+
+        initLightRimeStack();
+       
         while(1)
         {
             PROCESS_WAIT_EVENT();
