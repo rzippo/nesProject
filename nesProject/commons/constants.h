@@ -26,8 +26,6 @@
 #define MBOX_EMPTY 1
 #define MBOX_FULL 2
 
-#define MBOX_PULL_PERIOD_MINUTES 20
-
 //Auto-opening
 #define AUTO_OPENING_LED_PERIOD 2
 #define AUTO_OPENING_BLINKINGS 16

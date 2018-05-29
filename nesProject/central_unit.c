@@ -118,35 +118,28 @@ void processMboxMessage(unsigned char* message, int payloadSize)
 {
     unsigned char cmd = message[0];
 
-    //todo: implement blinking
-    //todo: implement pulling?
     if(cmd == MBOX_EMPTY)
     {
         printf("Mailbox is empty\n");
-        leds_off(LEDS_GREEN);
+        leds_off(LEDS_BLUE);
     }
     else if(cmd == MBOX_FULL)
     {
         printf("Mailbox is full\n");
-        leds_on(LEDS_GREEN);
+        leds_on(LEDS_BLUE);
     }
 }
 
 PROCESS_THREAD(central_unit_main, ev, data)
 {
-    static int isSetupDone = 0;
 	static struct etimer commandTimeout;
 	static unsigned char buttonCount = 0;
 	
 	PROCESS_BEGIN();
+
 	SENSORS_ACTIVATE(button_sensor);
-	
-    if(!isSetupDone)
-    {
-        initCURimeStack();
-        leds_off(LEDS_ALL);
-        isSetupDone = 1;
-    }
+    leds_off(LEDS_ALL);
+    initCURimeStack();
 
 	while(1)
 	{
