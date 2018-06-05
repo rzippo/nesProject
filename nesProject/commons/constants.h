@@ -23,8 +23,8 @@
 #define ALARM_LED_PERIOD 2
 
 //Mailbox
-#define MBOX_EMPTY 1
-#define MBOX_FULL 2
+#define MBOX_MAX_LOAD 10
+#define MBOX_NOTIFICATION_LOAD 7
 
 //Auto-opening
 #define AUTO_OPENING_LED_PERIOD 2
