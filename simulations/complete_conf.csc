@@ -266,7 +266,7 @@
   <plugin>
     org.contikios.cooja.plugins.SimControl
     <width>280</width>
-    <z>0</z>
+    <z>1</z>
     <height>160</height>
     <location_x>400</location_x>
     <location_y>0</location_y>
@@ -285,7 +285,7 @@
       <viewport>3.8912213379456517 0.0 0.0 3.8912213379456517 79.61125135868356 -6.849416378230579</viewport>
     </plugin_config>
     <width>400</width>
-    <z>2</z>
+    <z>3</z>
     <height>400</height>
     <location_x>1</location_x>
     <location_y>1</location_y>
@@ -298,10 +298,10 @@
       <coloring />
     </plugin_config>
     <width>1255</width>
-    <z>5</z>
-    <height>240</height>
-    <location_x>400</location_x>
-    <location_y>160</location_y>
+    <z>0</z>
+    <height>403</height>
+    <location_x>681</location_x>
+    <location_y>1</location_y>
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.TimeLine
@@ -325,18 +325,6 @@
     <location_y>775</location_y>
   </plugin>
   <plugin>
-    org.contikios.cooja.plugins.Notes
-    <plugin_config>
-      <notes>Enter notes here</notes>
-      <decorations>true</decorations>
-    </plugin_config>
-    <width>975</width>
-    <z>7</z>
-    <height>160</height>
-    <location_x>680</location_x>
-    <location_y>0</location_y>
-  </plugin>
-  <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
     <mote_arg>1</mote_arg>
     <plugin_config>
@@ -344,7 +332,7 @@
       <scrollpos>0,0</scrollpos>
     </plugin_config>
     <width>350</width>
-    <z>3</z>
+    <z>4</z>
     <height>300</height>
     <location_x>27</location_x>
     <location_y>411</location_y>
@@ -357,7 +345,7 @@
       <scrollpos>0,0</scrollpos>
     </plugin_config>
     <width>350</width>
-    <z>4</z>
+    <z>5</z>
     <height>300</height>
     <location_x>397</location_x>
     <location_y>409</location_y>
@@ -370,7 +358,7 @@
       <scrollpos>0,0</scrollpos>
     </plugin_config>
     <width>350</width>
-    <z>1</z>
+    <z>2</z>
     <height>300</height>
     <location_x>766</location_x>
     <location_y>413</location_y>
