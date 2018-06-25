@@ -12,7 +12,7 @@ AUTOSTART_PROCESSES(&mbox_node_main);
 
 PROCESS_THREAD(mbox_node_main, ev, data)
 {
-	static int isFull = 0;
+	static char mboxLoad = 0;
 
 	PROCESS_BEGIN();
 	
@@ -22,20 +22,17 @@ PROCESS_THREAD(mbox_node_main, ev, data)
 	while(1)
 	{
 		PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event && data == &button_sensor);
-		if(isFull)
-		{
-			isFull = 0;
-			printf("Mailbox is empty\n");
-			unsigned char command = MBOX_EMPTY;
-			sendFromMboxToCentralUnit(&command, 1);
-		}
+		mboxLoad = (mboxLoad + 1) % (MBOX_MAX_LOAD + 1);
+		
+		if(mboxLoad == 0)
+			printf("Mailbox is empty.\n");
+		else if(mboxLoad == MBOX_MAX_LOAD)
+			printf("Mailbox is full!\n");
 		else
-		{
-			isFull = 1;
-			printf("Mailbox is full\n");
-			unsigned char command = MBOX_FULL;
-			sendFromMboxToCentralUnit(&command, 1);
-		}	
+			printf("Mailbox is at %d0%% load\n", mboxLoad);
+		
+		unsigned char command = mboxLoad;
+		sendFromMboxToCentralUnit(&command, 1);
 	}
 	PROCESS_END();
 }

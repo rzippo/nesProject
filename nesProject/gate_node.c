@@ -14,35 +14,46 @@
 PROCESS(gate_node_init, "Gate Node init Process");
 AUTOSTART_PROCESSES(&gate_node_init, &alarm_process);
 
-void processAlarmCommand(unsigned char command)
+void processCUBroadcastCommand(unsigned char command)
 {
-	if(command == ALARM_ON_COMMAND)
+	switch(command)
 	{
-		if(!isAlarmOn)
+		case ALARM_ON_COMMAND:
 		{
-			process_post_synch(&gateAutoOpeningProcess, alarm_on_event, NULL);
-			process_post_synch(&alarm_process, alarm_on_event, NULL);
+			if(!isAlarmOn)
+			{
+				process_post_synch(&gateAutoOpeningProcess, alarm_on_event, NULL);
+				process_post_synch(&alarm_process, alarm_on_event, NULL);
+			}
+			else
+			{
+				printf("Alarm is already ON: command refused\n");
+			}
+			break;
 		}
-		else
+
+		case ALARM_OFF_COMMAND:
 		{
-			printf("Alarm is already ON: command refused\n");
+			if(isAlarmOn)
+			{
+				process_post_synch(&alarm_process, alarm_off_event, NULL);
+				process_post_synch(&gateAutoOpeningProcess, alarm_off_event, NULL);
+			}
+			else
+			{
+				printf("Alarm is already OFF: command refused\n");
+			}
+			break;
 		}
-	}
-	else if(command == ALARM_OFF_COMMAND)
-	{
-		if(isAlarmOn)
+
+		case DOORS_AUTO_OPEN_COMMAND:
 		{
-			process_post_synch(&alarm_process, alarm_off_event, NULL);
-			process_post_synch(&gateAutoOpeningProcess, alarm_off_event, NULL);
+			process_start(&gateAutoOpeningProcess, NULL);
+			break;
 		}
-		else
-		{
-			printf("Alarm is already OFF: command refused\n");
-		}
-	}
-	else
-	{
-		printf("Unrecognized command in alarm broadcast channel\n");
+
+		default:
+			printf("Unrecognized command in alarm broadcast channel\n");
 	}
 }
 
@@ -61,12 +72,6 @@ void processCUCommand(unsigned char command)
 				printf("Gate Lock Toggled\n");
 				toogleLock();
 				
-				break;
-			}
-			
-			case DOORS_OPEN_COMMAND:
-			{
-				process_start(&gateAutoOpeningProcess, NULL);
 				break;
 			}
 			

@@ -18,35 +18,46 @@ PROCESS(door_node_main, "Door Node Main Process");
 
 AUTOSTART_PROCESSES(&door_node_main, &alarm_process, &averageTemperatureProcess);
 
-void processAlarmCommand(unsigned char command)
+void processCUBroadcastCommand(unsigned char command)
 {
-	if(command == ALARM_ON_COMMAND)
+	switch(command)
 	{
-		if(!isAlarmOn)
+		case ALARM_ON_COMMAND:
 		{
-			process_post_synch(&doorAutoOpeningProcess, alarm_on_event, NULL);
-			process_post_synch(&alarm_process, alarm_on_event, NULL);
+			if(!isAlarmOn)
+			{
+				process_post_synch(&doorAutoOpeningProcess, alarm_on_event, NULL);
+				process_post_synch(&alarm_process, alarm_on_event, NULL);
+			}
+			else
+			{
+				printf("Alarm is already ON: command refused\n");
+			}
+			break;
 		}
-		else
+
+		case ALARM_OFF_COMMAND:
 		{
-			printf("Alarm is already ON: command refused\n");
+			if(isAlarmOn)
+			{
+				process_post_synch(&alarm_process, alarm_off_event, NULL);
+				process_post_synch(&doorAutoOpeningProcess, alarm_off_event, NULL);
+			}
+			else
+			{
+				printf("Alarm is already OFF: command refused\n");
+			}
+			break;
 		}
-	}
-	else if(command == ALARM_OFF_COMMAND)
-	{
-		if(isAlarmOn)
+
+		case DOORS_AUTO_OPEN_COMMAND:
 		{
-			process_post_synch(&alarm_process, alarm_off_event, NULL);
-			process_post_synch(&doorAutoOpeningProcess, alarm_off_event, NULL);
+			process_start(&doorAutoOpeningProcess, NULL);
+			break;
 		}
-		else
-		{
-			printf("Alarm is already OFF: command refused\n");
-		}
-	}
-	else
-	{
-		printf("Unrecognized command in alarm broadcast channel\n");
+
+		default:
+			printf("Unrecognized command in alarm broadcast channel\n");
 	}
 }
 
@@ -60,12 +71,6 @@ void processCUCommand(unsigned char command)
 	{
 		switch(command)
 		{
-			case DOORS_OPEN_COMMAND:
-			{
-				process_start(&doorAutoOpeningProcess, NULL);
-				break;
-			}
-			
 			case AVERAGE_TEMPERATURE_COMMAND:
 			{	
 				printf("Average temp is: %d\n",

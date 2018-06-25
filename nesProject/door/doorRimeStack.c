@@ -6,7 +6,7 @@
 #include "net/rime/rime.h"
 
 extern void processCUCommand(unsigned char command);
-extern void processAlarmCommand(unsigned char command);
+extern void processCUBroadcastCommand(unsigned char command);
 extern void setNodesAddresses();
 
 static void recv_runicast(struct runicast_conn *c, const linkaddr_t *from, uint8_t seqno)
@@ -47,7 +47,7 @@ static void broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from)
 
 	if( linkaddr_cmp(from, &centralNodeAddress))
 	{
-		processAlarmCommand(receivedCommand);
+		processCUBroadcastCommand(receivedCommand);
 	}
 	else
 	{
@@ -65,7 +65,7 @@ void initDoorRimeStack()
 	printf("My address is %d.%d\n", linkaddr_node_addr.u8[0], linkaddr_node_addr.u8[1]);
 	
 	runicast_open(&cuRunicastConnection, CU_DOOR_CHANNEL, &runicast_calls);
-	broadcast_open(&alarmBroadcastConnection, ALARM_BROADCAST_CHANNEL, &broadcast_call);
+	broadcast_open(&alarmBroadcastConnection, GATE_DOOR_BROADCAST_CHANNEL, &broadcast_call);
 }
 
 void sendFromDoorToCentralUnit(unsigned char *cmd, int bytes)

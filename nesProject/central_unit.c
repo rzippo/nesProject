@@ -26,7 +26,7 @@ void command_switch(unsigned char command)
         else
             alarmCommand = ALARM_OFF_COMMAND;
 
-        broadcastAlarm(alarmCommand);
+        broadcastDoorGate(alarmCommand);
         return;
     }
 
@@ -48,12 +48,10 @@ void command_switch(unsigned char command)
             break;
         }
         
-        case DOORS_OPEN_COMMAND:
+        case DOORS_AUTO_OPEN_COMMAND:
         {
-            printf("Doors opened\n");
-            
-            sendDoorNode(&command, 1);
-            sendGateNode(&command, 1);
+            printf("Doors auto opening started\n");
+            broadcastDoorGate(command);
             
             break;
         }
@@ -115,18 +113,19 @@ void processGateMessage(unsigned char* message, int payloadSize)
 
 void processMboxMessage(unsigned char* message, int payloadSize)
 {
-    unsigned char cmd = message[0];
-
-    if(cmd == MBOX_EMPTY)
-    {
-        printf("Mailbox is empty\n");
-        leds_off(LEDS_BLUE);
-    }
-    else if(cmd == MBOX_FULL)
-    {
-        printf("Mailbox is full\n");
+    unsigned char mboxLoad = message[0];
+    
+    if(mboxLoad == 0)
+        printf("Mailbox is empty.\n");
+    else if(mboxLoad == MBOX_MAX_LOAD)
+        printf("Mailbox is full!\n");
+    else
+        printf("Mailbox is at %d0%% load\n", mboxLoad);
+    
+    if(mboxLoad >= MBOX_NOTIFICATION_LOAD)
         leds_on(LEDS_BLUE);
-    }
+    else
+        leds_off(LEDS_BLUE);
 }
 
 void helpText()

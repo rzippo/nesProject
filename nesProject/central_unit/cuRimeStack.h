@@ -5,7 +5,7 @@ void initCURimeStack();
 void sendDoorNode(unsigned char* c, int bytes);
 void sendGateNode(unsigned char* c, int bytes);
 
-void broadcastAlarm(char command);
+void broadcastDoorGate(char command);
 void broadcastShutOff();
 
 void sendRoomLightNodes(unsigned char* c, int bytes);

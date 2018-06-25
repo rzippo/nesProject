@@ -77,10 +77,11 @@ void sendGateNode(unsigned char* c, int bytes)
 
 //todo: unreliable send to MBOX?
 
-void broadcastAlarm(char command)
+void broadcastDoorGate(char command)
 {
 	packetbuf_copyfrom(&command, sizeof(char));
 	broadcast_send(&alarmBroadcastConnection);
+	printf("Sent broadcast message to DOOR_GATE channel, message: %d\n", command);
 };
 
 void broadcastShutOff()
@@ -88,6 +89,7 @@ void broadcastShutOff()
 	char command = SHUT_OFF_LIGHTS_COMMAND;
 	packetbuf_copyfrom(&command, sizeof(char));
 	broadcast_send(&roomLightsBroadcastConnection);
+	printf("Sent broadcast message to ROOMLIGHTS channel, message: %d\n", command);
 };
 
 void initCURimeStack()
@@ -102,6 +104,6 @@ void initCURimeStack()
 	//todo: should be unreliable?
 	runicast_open(&mboxRunicastConnection, CU_MBOX_CHANNEL, &runicast_calls);
 
-	broadcast_open(&alarmBroadcastConnection, ALARM_BROADCAST_CHANNEL, &broadcast_call);
+	broadcast_open(&alarmBroadcastConnection, GATE_DOOR_BROADCAST_CHANNEL, &broadcast_call);
 	broadcast_open(&roomLightsBroadcastConnection, ROOMLIGHTS_BROADCAST_CHANNEL, &broadcast_call);
 }

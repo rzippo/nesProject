@@ -11,7 +11,7 @@
 //Command codes. All codes except ALARM_TOGGLE are used in transmission too
 #define ALARM_TOGGLE_COMMAND 1
 #define GATELOCK_TOGGLE_COMMAND 2
-#define DOORS_OPEN_COMMAND 3
+#define DOORS_AUTO_OPEN_COMMAND 3
 #define AVERAGE_TEMPERATURE_COMMAND 4
 #define LIGHT_VALUE_COMMAND 5
 #define SHUT_OFF_LIGHTS_COMMAND 6
@@ -23,8 +23,8 @@
 #define ALARM_LED_PERIOD 2
 
 //Mailbox
-#define MBOX_EMPTY 1
-#define MBOX_FULL 2
+#define MBOX_MAX_LOAD 10
+#define MBOX_NOTIFICATION_LOAD 7
 
 //Auto-opening
 #define AUTO_OPENING_LED_PERIOD 2
