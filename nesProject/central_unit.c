@@ -48,7 +48,7 @@ void command_switch(unsigned char command)
             break;
         }
         
-        case DOORS_OPEN_COMMAND:
+        case DOORS_AUTO_OPEN_COMMAND:
         {
             printf("Doors opened\n");
             

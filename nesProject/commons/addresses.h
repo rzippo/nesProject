@@ -22,7 +22,7 @@
 #define CU_MBOX_CHANNEL 164
 
 //Broadcast channels
-#define ALARM_BROADCAST_CHANNEL 174
+#define GATE_DOOR_BROADCAST_CHANNEL 174
 #define ROOMLIGHTS_BROADCAST_CHANNEL 184
 
 extern linkaddr_t centralNodeAddress;

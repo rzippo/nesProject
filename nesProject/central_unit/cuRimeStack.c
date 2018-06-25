@@ -102,6 +102,6 @@ void initCURimeStack()
 	//todo: should be unreliable?
 	runicast_open(&mboxRunicastConnection, CU_MBOX_CHANNEL, &runicast_calls);
 
-	broadcast_open(&alarmBroadcastConnection, ALARM_BROADCAST_CHANNEL, &broadcast_call);
+	broadcast_open(&alarmBroadcastConnection, GATE_DOOR_BROADCAST_CHANNEL, &broadcast_call);
 	broadcast_open(&roomLightsBroadcastConnection, ROOMLIGHTS_BROADCAST_CHANNEL, &broadcast_call);
 }

@@ -11,7 +11,7 @@
 //Command codes. All codes except ALARM_TOGGLE are used in transmission too
 #define ALARM_TOGGLE_COMMAND 1
 #define GATELOCK_TOGGLE_COMMAND 2
-#define DOORS_OPEN_COMMAND 3
+#define DOORS_AUTO_OPEN_COMMAND 3
 #define AVERAGE_TEMPERATURE_COMMAND 4
 #define LIGHT_VALUE_COMMAND 5
 #define SHUT_OFF_LIGHTS_COMMAND 6
