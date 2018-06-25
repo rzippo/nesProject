@@ -19,7 +19,11 @@ PROCESS_THREAD(alarm_process, ev, data)
 	static unsigned char ledStatusBeforeAlarm = 0;
 	
 	PROCESS_BEGIN();
-		
+		#ifdef INIT_GATE_NODE
+			setLock(LOCKED);
+			initGateRimeStack();
+		#endif
+	
 		alarm_on_event = process_alloc_event();
 		alarm_off_event = process_alloc_event();
 

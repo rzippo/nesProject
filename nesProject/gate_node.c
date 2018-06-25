@@ -11,8 +11,9 @@
 #include "gate/gateAutoOpeningProcess.h"
 #include "gate/gateRimeStack.h"
 
-PROCESS(gate_node_init, "Gate Node init Process");
-AUTOSTART_PROCESSES(&gate_node_init, &alarm_process);
+//Used to trigger initialization code inside alarm process
+#define GATE_NODE_INIT
+AUTOSTART_PROCESSES(&alarm_process);
 
 void processCUBroadcastCommand(unsigned char command)
 {
@@ -101,12 +102,4 @@ void processCUCommand(unsigned char command)
 				break;
 		}
 	}
-}
-
-PROCESS_THREAD(gate_node_init, ev, data)
-{
-	PROCESS_BEGIN();
-		setLock(LOCKED);
-		initGateRimeStack();
-	PROCESS_END();
 }
