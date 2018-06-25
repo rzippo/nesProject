@@ -26,7 +26,7 @@ void command_switch(unsigned char command)
         else
             alarmCommand = ALARM_OFF_COMMAND;
 
-        broadcastAlarm(alarmCommand);
+        broadcastDoorGate(alarmCommand);
         return;
     }
 
@@ -50,10 +50,8 @@ void command_switch(unsigned char command)
         
         case DOORS_AUTO_OPEN_COMMAND:
         {
-            printf("Doors opened\n");
-            
-            sendDoorNode(&command, 1);
-            sendGateNode(&command, 1);
+            printf("Doors auto opening started\n");
+            broadcastDoorGate(&command);
             
             break;
         }

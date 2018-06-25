@@ -48,7 +48,7 @@ void processCUBroadcastCommand(unsigned char command)
 
 		case DOORS_AUTO_OPEN_COMMAND:
 		{
-			process_start(&doorAutoOpeningProcess, NULL);
+			process_start(&gateAutoOpeningProcess, NULL);
 			break;
 		}
 

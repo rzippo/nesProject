@@ -77,7 +77,7 @@ void sendGateNode(unsigned char* c, int bytes)
 
 //todo: unreliable send to MBOX?
 
-void broadcastAlarm(char command)
+void broadcastDoorGate(char command)
 {
 	packetbuf_copyfrom(&command, sizeof(char));
 	broadcast_send(&alarmBroadcastConnection);
