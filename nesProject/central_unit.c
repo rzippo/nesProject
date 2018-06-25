@@ -51,7 +51,7 @@ void command_switch(unsigned char command)
         case DOORS_AUTO_OPEN_COMMAND:
         {
             printf("Doors auto opening started\n");
-            broadcastDoorGate(&command);
+            broadcastDoorGate(command);
             
             break;
         }
