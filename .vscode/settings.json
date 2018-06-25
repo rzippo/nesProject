@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "averagetemperatureprocess.h": "c",
+        "alarm_process.h": "c",
+        "constants.h": "c",
+        "mboxrimestack.h": "c"
+    }
+}
