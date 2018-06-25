@@ -11,7 +11,6 @@
 
 #include "door/doorRimeStack.h"
 #include "commons/alarm_process.h"
-#include "commons/lock.h"
 #include "door/doorAutoOpeningProcess.h"
 #include "door/averageTemperatureProcess.h"
 
@@ -19,64 +18,85 @@ PROCESS(door_node_main, "Door Node Main Process");
 
 AUTOSTART_PROCESSES(&door_node_main, &alarm_process, &averageTemperatureProcess);
 
+void processCUBroadcastCommand(unsigned char command)
+{
+	switch(command)
+	{
+		case ALARM_ON_COMMAND:
+		{
+			if(!isAlarmOn)
+			{
+				process_post_synch(&doorAutoOpeningProcess, alarm_on_event, NULL);
+				process_post_synch(&alarm_process, alarm_on_event, NULL);
+			}
+			else
+			{
+				printf("Alarm is already ON: command refused\n");
+			}
+			break;
+		}
+
+		case ALARM_OFF_COMMAND:
+		{
+			if(isAlarmOn)
+			{
+				process_post_synch(&alarm_process, alarm_off_event, NULL);
+				process_post_synch(&doorAutoOpeningProcess, alarm_off_event, NULL);
+			}
+			else
+			{
+				printf("Alarm is already OFF: command refused\n");
+			}
+			break;
+		}
+
+		case DOORS_AUTO_OPEN_COMMAND:
+		{
+			process_start(&doorAutoOpeningProcess, NULL);
+			break;
+		}
+
+		default:
+			printf("Unrecognized command in alarm broadcast channel\n");
+	}
+}
+
 void processCUCommand(unsigned char command)
 {
-	if( command == ALARM_TOGGLE_COMMAND )
+	if(isAlarmOn)
 	{
-		if(!isAlarmOn)
-		{
-			process_post_synch(&doorAutoOpeningProcess, alarm_toggled_event, NULL);
-			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
-		}
-		else
-		{
-			process_post_synch(&alarm_process, alarm_toggled_event, NULL);
-			process_post_synch(&doorAutoOpeningProcess, alarm_toggled_event, NULL);
-		}
+		printf("Alarm is ON: command %c refused\n", command);
 	}
 	else
 	{
-		if(isAlarmOn)
+		switch(command)
 		{
-			printf("Alarm is ON: command %c refused\n", command);
-		}
-		else
-		{
-			switch(command)
-			{
-				case DOORS_OPEN_COMMAND:
-				{
-					process_start(&doorAutoOpeningProcess, NULL);
-					break;
-				}
-				
-				case AVERAGE_TEMPERATURE_COMMAND:
-				{	
-					printf("Average temp is: %d\n",
-						   (int) averageTemperature);
+			case AVERAGE_TEMPERATURE_COMMAND:
+			{	
+				printf("Average temp is: %d\n",
+						(int) averageTemperature);
 
-					//1 byte for cmd, 4 bytes for payload size, 
-					//4 bytes for float
-					unsigned char buff[9];
+				//1 byte for cmd, 4 bytes for payload size, 
+				//4 bytes for float
+				unsigned char buff[9];
 
-					//1byte for cmd, 4 bytes for float
-					int* payloadSize = (int*)buff;
-					*payloadSize = 5;
+				//1byte for cmd, 4 bytes for float
+				int* payloadSize = (int*)buff;
+				*payloadSize = 5;
 
-					*(buff+4) = AVERAGE_TEMPERATURE_COMMAND;
+				*(buff+4) = AVERAGE_TEMPERATURE_COMMAND;
 
-					float* floatBuff = (float*)(buff+5);
-					*floatBuff = (float)averageTemperature;
+				float* floatBuff = (float*)(buff+5);
+				*floatBuff = (float)averageTemperature;
 
-                    sendFromDoorToCentralUnit(buff, 9);
+				sendFromDoorToCentralUnit(buff, 9);
 
-					break;
-				}
-				
-				default:
-					printf("Command %d not recognized from this node\n", command);
-					break;
+				break;
 			}
+			
+			default:
+				printf("Command %d not recognized from this node\n", command);
+				break;
 		}
 	}
 }
@@ -85,10 +105,9 @@ PROCESS_THREAD(door_node_main, ev, data)
 {
     PROCESS_BEGIN();
 		initDoorRimeStack();
-		setLock(LOCKED);
 
 		//we start with garden lights off
-		leds_off(LEDS_GREEN);
+		leds_off(LEDS_ALL);
 		leds_on(LEDS_RED);
 
 		SENSORS_ACTIVATE(button_sensor);
@@ -97,12 +116,16 @@ PROCESS_THREAD(door_node_main, ev, data)
 		{
 			PROCESS_WAIT_EVENT();
 
-			if(ev == sensors_event && data == &button_sensor){
-				//if the alarm is on, commands must be ignored
+			if(ev == sensors_event && data == &button_sensor)
+			{
 				if(!isAlarmOn)
 				{
-					//toggle alarm lights
+					printf("Garden lights toggled\n");
 					leds_toggle(LEDS_GREEN | LEDS_RED);
+				}
+				else
+				{
+					printf("Alarm is on, command ignored\n");
 				}
 			}
 		}

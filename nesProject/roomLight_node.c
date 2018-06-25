@@ -8,14 +8,16 @@
 #include "commons/light.h"
 #include "roomLight/roomLightRimeStack.h"
 
-PROCESS(light_node_init, "Light node init process");
+PROCESS(light_node_main, "Light node init process");
 PROCESS(light_adjuster, "Light adjuster process");
-AUTOSTART_PROCESSES(&light_node_init);
+AUTOSTART_PROCESSES(&light_node_main);
 
 process_event_t light_on_event;
 process_event_t light_off_event;
 
 int lightOn = 0;
+double lightExponentialAverage = 0.0;
+double alpha = ((double)LIGHT_ADJUSTMENT_PERIOD_SECONDS)/LIGHT_ADJUSTMENT_RESPONSE_TIME_SECONDS;
 
 void processCUCommand(unsigned char command)
 {
@@ -30,16 +32,20 @@ void processCUCommand(unsigned char command)
     }
 }
 
-PROCESS_THREAD(light_node_init, ev, data)
+PROCESS_THREAD(light_node_main, ev, data)
 {
     PROCESS_BEGIN();
-        initLightRimeStack();
+        //Allocate events
         light_on_event = process_alloc_event();
         light_off_event = process_alloc_event();
-
+        
+        //Initialize exponential mean
+        lightExponentialAverage = getExternalLight();
         process_start(&light_adjuster, NULL);
-
         SENSORS_ACTIVATE(button_sensor);
+
+        initLightRimeStack();
+       
         while(1)
         {
             PROCESS_WAIT_EVENT();
@@ -65,9 +71,10 @@ PROCESS_THREAD(light_node_init, ev, data)
 
 void adjustLight()
 {
-    double lightValue = getExternalLight();
-    printf("Detected value %d\n", (int) lightValue);    
-    printf("Adjusting light by %d\n", (int) (LIGHT_TARGET_INTENSITY - lightValue));
+    double ligthMeasurement = getExternalLight();
+    lightExponentialAverage = ligthMeasurement * alpha + lightExponentialAverage * (1 - alpha);
+    printf("Detected light average %d\n", (int) lightExponentialAverage);    
+    printf("Adjusting light by %d\n", (int) (LIGHT_TARGET_INTENSITY - lightExponentialAverage));
 }
 
 
@@ -84,7 +91,7 @@ PROCESS_THREAD(light_adjuster, ev, data)
                 printf("Light is now on\n");
                 leds_on(LEDS_BLUE); 
                 adjustLight();
-                etimer_set(&lightAdjustmentTimer, LIGHT_ADJUSTMENT_PERIOD * CLOCK_SECOND);
+                etimer_set(&lightAdjustmentTimer, LIGHT_ADJUSTMENT_PERIOD_SECONDS * CLOCK_SECOND);
             }
             else if(ev == light_off_event)
             {

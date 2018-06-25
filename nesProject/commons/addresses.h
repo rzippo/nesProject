@@ -16,10 +16,14 @@
 #define MBOX_NODE_HIGH 4
 #define MBOX_NODE_LOW 0
 
+//Unicast channels
 #define CU_DOOR_CHANNEL 144
 #define CU_GATE_CHANNEL 154
 #define CU_MBOX_CHANNEL 164
-#define CU_ROOMLIGHT_CHANNEL 174
+
+//Broadcast channels
+#define GATE_DOOR_BROADCAST_CHANNEL 174
+#define ROOMLIGHTS_BROADCAST_CHANNEL 184
 
 extern linkaddr_t centralNodeAddress;
 extern linkaddr_t doorNodeAddress;

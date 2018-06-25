@@ -5,31 +5,34 @@
 #include "net/rime/rime.h"
 
 #include "commons/constants.h"
-#include "commons/command_process.h"
-#include "commons/lock.h"
-#include "commons/light.h"
 #include "mailbox/mboxRimeStack.h"
 
-PROCESS(mbox_node_init, "Mbox Node init Process");
-AUTOSTART_PROCESSES(&mbox_node_init, &command_process);
+PROCESS(mbox_node_main, "Mbox Node init Process");
+AUTOSTART_PROCESSES(&mbox_node_main);
 
-void command_switch(unsigned char command)
+PROCESS_THREAD(mbox_node_main, ev, data)
 {
-	if(command == MBOX_EMPTY)
-	{
-		printf("Mailbox is empty\n");
-		sendFromMboxToCentralUnit(&command, 1);
-	}
-	else if(command == MBOX_FULL)
-	{
-		printf("Mailbox is full\n");
-		sendFromMboxToCentralUnit(&command, 1);
-	}
-}
+	static char mboxLoad = 0;
 
-PROCESS_THREAD(mbox_node_init, ev, data)
-{
 	PROCESS_BEGIN();
-		initMboxRimeStack();
+	
+	SENSORS_ACTIVATE(button_sensor);
+	initMboxRimeStack();
+
+	while(1)
+	{
+		PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event && data == &button_sensor);
+		mboxLoad = (mboxLoad + 1) % (MBOX_MAX_LOAD + 1);
+		
+		if(mboxLoad == 0)
+			printf("Mailbox is empty.\n");
+		else if(mboxLoad == MBOX_MAX_LOAD)
+			printf("Mailbox is full!\n");
+		else
+			printf("Mailbox is at %d0%% load\n", mboxLoad);
+		
+		unsigned char command = mboxLoad;
+		sendFromMboxToCentralUnit(&command, 1);
+	}
 	PROCESS_END();
 }

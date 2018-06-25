@@ -4,6 +4,10 @@
 void initCURimeStack();
 void sendDoorNode(unsigned char* c, int bytes);
 void sendGateNode(unsigned char* c, int bytes);
+
+void broadcastDoorGate(char command);
+void broadcastShutOff();
+
 void sendRoomLightNodes(unsigned char* c, int bytes);
 
 #endif //NESPROJECT_CURIMESTACK_H
